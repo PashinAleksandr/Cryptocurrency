@@ -20,6 +20,7 @@
 		D4432FC72E6DF5DD007CF2A0 /* MainModuleAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FC62E6DF5DD007CF2A0 /* MainModuleAssembler.swift */; };
 		D4432FCC2E6DF6D4007CF2A0 /* UIViewInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */; };
 		D4432FCE2E6DF8C0007CF2A0 /* TransitionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */; };
+		D4AEFACF2E71D69F004248E7 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AEFACE2E71D69F004248E7 /* MainTabBarController.swift */; };
 		D4BB88112E6A01F80000CAF0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BB88102E6A01F80000CAF0 /* AppDelegate.swift */; };
 		D4BB88132E6A01F80000CAF0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BB88122E6A01F80000CAF0 /* SceneDelegate.swift */; };
 		D4BB88182E6A01F80000CAF0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4BB88162E6A01F80000CAF0 /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 		D4432FC62E6DF5DD007CF2A0 /* MainModuleAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModuleAssembler.swift; sourceTree = "<group>"; };
 		D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewInput.swift; sourceTree = "<group>"; };
 		D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionHandler.swift; sourceTree = "<group>"; };
+		D4AEFACE2E71D69F004248E7 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		D4BB880D2E6A01F80000CAF0 /* Cryptocurrency.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cryptocurrency.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4BB88102E6A01F80000CAF0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D4BB88122E6A01F80000CAF0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 		AD0E32422F0FA5CB74FB3904 /* presentation */ = {
 			isa = PBXGroup;
 			children = (
+				D4AEFACD2E71D687004248E7 /* MainTabBar */,
 				D4432FCA2E6DF6BF007CF2A0 /* Helpers */,
 				FE86DBBFE996D5ABFA6E7F44 /* CryptocurrencyList */,
 			);
@@ -148,6 +151,14 @@
 				D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		D4AEFACD2E71D687004248E7 /* MainTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				D4AEFACE2E71D69F004248E7 /* MainTabBarController.swift */,
+			);
+			path = MainTabBar;
 			sourceTree = "<group>";
 		};
 		D4BB88042E6A01F80000CAF0 = {
@@ -333,6 +344,7 @@
 				311C5A2B1BA656DCD6612052 /* CryptocurrencyListinteractorInput.swift in Sources */,
 				3EDE10D52029A7993B1CECEA /* CryptocurrencyListinteractorOutput.swift in Sources */,
 				08E332C4DAE62A743F10E882 /* CryptocurrencyListinteractor.swift in Sources */,
+				D4AEFACF2E71D69F004248E7 /* MainTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
