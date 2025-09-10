@@ -1,0 +1,45 @@
+//
+//  {{ module_info.file_name }}
+//  {{ module_info.project_name }}
+//
+//  Created by {{ developer.name }} on {{ date }}.
+//  Copyright © {{ year }} {{ developer.company }}. All rights reserved.
+//
+
+import Foundation
+import Swinject
+
+class {{ module_info.name }}Factory: PresentationModuleFactory {
+
+    func instantiateViewController() -> {{ module_info.name }}ViewController {
+        let viewController = MainModuleAssembler.resolver.resolve({{ module_info.name }}ViewController.self)!
+        return viewController
+    }
+    
+    func instantiateTransitionHandler() -> TransitionHandlerProtocol {
+        return instantiateViewController()
+    }
+}
+
+class {{ module_info.name }}ModuleAssembly: Assembly {
+    func assemble(container: Container) {
+        container.register({{ module_info.name }}ViewController.self) { (resolver: Resolver) in
+            let viewController = {{ module_info.name }}ViewController()
+            let router = {{ module_info.name }}Router()
+            router.transitionHandler = viewController
+
+            let presenter = {{ module_info.name }}Presenter()
+            presenter.view = viewController
+            presenter.router = router
+
+            viewController.output = presenter
+            viewController.moduleInput = presenter
+
+            let interactor = {{ module_info.name }}Interactor()
+            presenter.interactor = interactor
+            interactor.output = presenter
+
+            return viewController
+        }.inObjectScope(.transient)
+    }
+}
