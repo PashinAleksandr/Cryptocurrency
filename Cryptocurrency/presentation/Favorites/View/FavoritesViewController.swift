@@ -1,38 +1,27 @@
 //
-//  CryptocurrencyListViewController.swift
+//  FavoritesViewController.swift
 //  Cryptocurrency
 //
-//  Created by APashin on 09/09/2025.
+//  Created by APashin on 11/09/2025.
 //  Copyright © 2025 bigTopCampany. All rights reserved.
 //
 
 import UIKit
 
-extension String {
-    static let home = "главная"
-}
-
-extension String {
-    func firstUppercased() -> String {
-        return self
-    }
-}
-
-class CryptocurrencyListViewController: UIViewController, CryptocurrencyListViewInput, UITableViewDataSource, UITableViewDelegate {
+class FavoritesViewController: UIViewController, FavoritesViewInput, UITableViewDelegate, UITableViewDataSource {
     
+    var output: FavoritesViewOutput?
     private let tableView = UITableView()
-    var output: CryptocurrencyListViewOutput?
-    
     // MARK: Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         output?.viewIsReady()
-        title = String.home.firstUppercased()
+        title = "Избранное"
         view.backgroundColor = .systemBackground
         setupTableView()
     }
     
-    func setupTableView() {
+    private func setupTableView() {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -43,24 +32,24 @@ class CryptocurrencyListViewController: UIViewController, CryptocurrencyListView
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
-    // MARK: CryptocurrencyListViewInput
+    // MARK: FavoritesViewInput
     func setupInitialState() {
-        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20 // Пример
+        return 10
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = "Элемент \(indexPath.row + 1)"
+        cell.textLabel?.text = "Избранное \(indexPath.row + 1)"
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        output?.didselect()//отдать валюту сущность ее
+        let detailsVC = detailsViewController()
+        navigationController?.pushViewController(detailsVC, animated: true)
     }
     
 }

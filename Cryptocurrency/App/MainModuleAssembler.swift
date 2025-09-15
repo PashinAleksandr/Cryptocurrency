@@ -32,7 +32,7 @@ extension MainModuleAssembler {
     
     private static func initPresentationModules() -> [Assembly] {
         return [
-            CryptocurrencyListModuleAssembly()
+            CryptocurrencyListModuleAssembly(), FavoritesModuleAssembly(), detailsModuleAssembly()
         ]
     }
     

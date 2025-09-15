@@ -17,6 +17,10 @@ class CryptocurrencyListPresenter: NSObject, CryptocurrencyListModuleInput, Cryp
     func viewIsReady() {
         view.setupInitialState()
     }
+    
+    func didselect() {
+        router.openDetails()
+    }
 }
 
 extension CryptocurrencyListPresenter: CryptocurrencyListInteractorOutput {

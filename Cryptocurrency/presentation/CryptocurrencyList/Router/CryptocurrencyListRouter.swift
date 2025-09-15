@@ -10,4 +10,10 @@ import Foundation
 
 class CryptocurrencyListRouter: CryptocurrencyListRouterInput {
 	weak var transitionHandler: TransitionHandlerProtocol?
+    
+    func openDetails() {
+//        transitionHandler?.presentModule(usingFactory: detailsFactory())
+        transitionHandler?.showModule(usingFactory: detailsFactory())
+    }
+    
 }

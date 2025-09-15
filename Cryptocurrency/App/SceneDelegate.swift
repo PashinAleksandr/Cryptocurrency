@@ -19,12 +19,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let screenRect = UIScreen.main.bounds
+        let tabBarController = TabBarController()
         window = UIWindow(frame: screenRect)
         window?.windowScene = windowScene
         
-        window?.rootViewController = MainTabBarController()
-        
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
