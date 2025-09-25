@@ -9,5 +9,5 @@
 import ViperMcFlurry
 
 protocol CryptocurrencyListModuleInput: AnyObject, RamblerViperModuleInput {
-   
+    
 }

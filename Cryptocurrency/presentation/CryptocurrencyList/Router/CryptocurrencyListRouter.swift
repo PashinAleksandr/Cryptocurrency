@@ -9,11 +9,11 @@
 import Foundation
 
 class CryptocurrencyListRouter: CryptocurrencyListRouterInput {
-	weak var transitionHandler: TransitionHandlerProtocol?
+    weak var transitionHandler: TransitionHandlerProtocol?
     
-    func openDetails() {
-//        transitionHandler?.presentModule(usingFactory: detailsFactory())
-        transitionHandler?.showModule(usingFactory: detailsFactory())
+    func openDetails(coin: Coin) {
+        let factory = DetailsFactory(coin: coin)
+        transitionHandler?.showModule(usingFactory: factory)
     }
     
 }

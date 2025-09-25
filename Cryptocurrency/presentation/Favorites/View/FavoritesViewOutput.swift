@@ -9,11 +9,8 @@
 import Foundation
 
 protocol FavoritesViewOutput {
-
-    /**
-        @author APashin
-        Notify presenter that view is ready
-    */
-
+    
+    func didselectCoinListVC()
     func viewIsReady()
+    func didRemoveFavorite(_ coin: Coin)
 }

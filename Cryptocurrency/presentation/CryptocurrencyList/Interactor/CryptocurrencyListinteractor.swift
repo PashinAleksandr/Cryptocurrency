@@ -9,7 +9,7 @@
 import Foundation
 
 class CryptocurrencyListInteractor: CryptocurrencyListInteractorInput {
-
+    
     weak var output: CryptocurrencyListInteractorOutput!
-
-}
+    
+} // бизнес логика 

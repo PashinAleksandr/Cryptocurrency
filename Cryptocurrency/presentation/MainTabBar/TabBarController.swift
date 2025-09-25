@@ -15,7 +15,7 @@ class TabBarController: UITabBarController {
         let homeVC = CryptocurrencyListFactory().instantiateViewController()
         homeVC.tabBarItem = UITabBarItem(title: "Главная", image: UIImage(systemName: "house"), tag: 0)
         let homeNavigationController = UINavigationController(rootViewController: homeVC)
-
+        
         let favoritesVC = FavoritesFactory().instantiateViewController()
         favoritesVC.tabBarItem = UITabBarItem(title: "Избранное", image: UIImage(systemName: "star"), tag: 1)
         let favouriteNavController = UINavigationController(rootViewController: favoritesVC)

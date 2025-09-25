@@ -9,11 +9,7 @@
 import Foundation
 
 protocol CryptocurrencyListViewOutput {
-
-    /**
-        @author APashin
-        Notify presenter that view is ready
-    */
-    func didselect()
+    
+    func didselect(coin: Coin)
     func viewIsReady()
 }

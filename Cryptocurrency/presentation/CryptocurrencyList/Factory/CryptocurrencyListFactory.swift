@@ -10,7 +10,7 @@ import Foundation
 import Swinject
 
 class CryptocurrencyListFactory: PresentationModuleFactory {
-
+    
     func instantiateViewController() -> CryptocurrencyListViewController {
         let viewController = MainModuleAssembler.resolver.resolve(CryptocurrencyListViewController.self)!
         return viewController
@@ -27,18 +27,18 @@ class CryptocurrencyListModuleAssembly: Assembly {
             let viewController = CryptocurrencyListViewController()
             let router = CryptocurrencyListRouter()
             router.transitionHandler = viewController
-
+            
             let presenter = CryptocurrencyListPresenter()
             presenter.view = viewController
             presenter.router = router
-
+            
             viewController.output = presenter
             viewController.moduleInput = presenter
-
+            
             let interactor = CryptocurrencyListInteractor()
             presenter.interactor = interactor
             interactor.output = presenter
-
+            
             return viewController
         }.inObjectScope(.transient)
     }

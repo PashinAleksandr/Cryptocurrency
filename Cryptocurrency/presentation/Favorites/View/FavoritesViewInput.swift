@@ -7,13 +7,13 @@
 //
 
 import Foundation
+import RxSwift
+import RxRelay
+import RxCocoa
 
 protocol FavoritesViewInput: UIViewInput {
-
-    /**
-        @author APashin
-        Setup initial state of the view
-    */
-
+    
     func setupInitialState()
+    func showFavorites(_ coins: [Coin])
 }
+

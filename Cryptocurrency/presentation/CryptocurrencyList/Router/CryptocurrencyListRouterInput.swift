@@ -9,5 +9,5 @@
 import Foundation
 
 protocol CryptocurrencyListRouterInput {
-    func openDetails()
+    func openDetails(coin: Coin)
 }

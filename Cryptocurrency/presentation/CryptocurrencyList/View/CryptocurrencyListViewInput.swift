@@ -9,11 +9,6 @@
 import Foundation
 
 protocol CryptocurrencyListViewInput: UIViewInput {
-
-    /**
-        @author APashin
-        Setup initial state of the view
-    */
-
+ 
     func setupInitialState()
 }

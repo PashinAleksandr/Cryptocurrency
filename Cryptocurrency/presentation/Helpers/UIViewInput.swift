@@ -9,13 +9,13 @@ import Foundation
 import UIKit
 
 protocol UIViewInput: AnyObject {
-    func show(_error: Error)
+    func show(_ error: Error)
     func showAllert(title: String, message: String)
 }
 
 extension UIViewInput {
-    func show(_error: Error) {
-        showAllert(title: "Error", message: _error.localizedDescription)
+    func show(_ error: Error) {
+        showAllert(title: "Error", message: error.localizedDescription)
     }
     
     func showAllert(title: String, message: String) {

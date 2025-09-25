@@ -9,5 +9,5 @@
 import ViperMcFlurry
 
 protocol FavoritesModuleInput: AnyObject, RamblerViperModuleInput {
-
+    
 }

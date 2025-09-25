@@ -9,17 +9,19 @@
 import Foundation
 
 class CryptocurrencyListPresenter: NSObject, CryptocurrencyListModuleInput, CryptocurrencyListViewOutput {
-
+    
+    
+    
     weak var view: CryptocurrencyListViewInput!
     var interactor: CryptocurrencyListInteractorInput!
     var router: CryptocurrencyListRouterInput!
-
+    
     func viewIsReady() {
         view.setupInitialState()
     }
     
-    func didselect() {
-        router.openDetails()
+    func didselect(coin: Coin) {
+        router.openDetails(coin: coin)
     }
 }
 

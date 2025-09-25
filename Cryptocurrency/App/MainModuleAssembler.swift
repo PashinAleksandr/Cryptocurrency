@@ -8,7 +8,7 @@
 import Swinject
 
 final class MainModuleAssembler {
-
+    
     private static var assembler: Assembler!
     
     public static var resolver: Resolver {
@@ -32,15 +32,24 @@ extension MainModuleAssembler {
     
     private static func initPresentationModules() -> [Assembly] {
         return [
-            CryptocurrencyListModuleAssembly(), FavoritesModuleAssembly(), detailsModuleAssembly()
+            CryptocurrencyListModuleAssembly(), FavoritesModuleAssembly(), detailsModuleAssembly(), ServiceAssembly()
         ]
     }
     
     private static func initServiceModules() -> [Assembly] {
         return [
-        
+            
         ]
     }
     
 }
+
+class ServiceAssembly: Assembly {
+    func assemble(container: Container) {
+        container.register(FavoritesServiceProtocol.self) { _ in
+            FavoritesService()
+        }.inObjectScope(.container)
+    }
+}
+
 

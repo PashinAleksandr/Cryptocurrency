@@ -9,5 +9,5 @@
 import ViperMcFlurry
 
 protocol detailsModuleInput: AnyObject, RamblerViperModuleInput {
-
+    func configure(with coin: Coin)
 }

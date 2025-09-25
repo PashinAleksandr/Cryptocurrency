@@ -9,11 +9,11 @@
 import Foundation
 
 protocol detailsViewOutput {
-
-    /**
-        @author APashin
-        Notify presenter that view is ready
-    */
-
+    
+    var coin: Coin? { get set }
+    
     func viewIsReady()
+    func didRemoveFavorite(_ coin: Coin)
+    func didAddFavorite(_ coin: Coin)
+    func didToggleFavorite()
 }

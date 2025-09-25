@@ -7,8 +7,12 @@
 //
 
 import Foundation
+import RxSwift
 
 protocol detailsInteractorInput: AnyObject {
-
-
+    func addToFavorites(_ coin: Coin)
+    func removeFromFavorites(_ coin: Coin)
+    func isFavorite(_ coin: Coin) -> Bool
+    func observeFavorites() -> Observable<[Coin]>
 }
+

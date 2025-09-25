@@ -9,6 +9,7 @@
 import Foundation
 
 protocol CryptocurrencyListInteractorInput: AnyObject {
-
-
+    
+    
 }
+

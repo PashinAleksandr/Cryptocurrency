@@ -9,5 +9,10 @@
 import Foundation
 
 class FavoritesRouter: FavoritesRouterInput {
-	weak var transitionHandler: TransitionHandlerProtocol?
+    weak var transitionHandler: TransitionHandlerProtocol?
+    
+    func openCryprocurrenctList() {
+      // TODO: не правильно работает переход
+        transitionHandler?.showModule(usingFactory: CryptocurrencyListFactory())
+    }
 }

@@ -9,5 +9,5 @@
 import Foundation
 
 class detailsRouter: detailsRouterInput {
-	weak var transitionHandler: TransitionHandlerProtocol?
+    weak var transitionHandler: TransitionHandlerProtocol?
 }

@@ -9,11 +9,9 @@
 import Foundation
 
 protocol detailsViewInput: UIViewInput {
-
-    /**
-        @author APashin
-        Setup initial state of the view
-    */
-
     func setupInitialState()
+    func configure(with coin: Coin)
+    func updateFavoriteState(_ isFavorite: Bool)
 }
+
+
