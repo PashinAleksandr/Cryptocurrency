@@ -10,9 +10,7 @@ target 'Cryptocurrency' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'SnapKit'
-  pod 'ReachabilitySwift'
   pod 'Kingfisher'
-  pod "ViperMcFlurry"
   pod 'Charts'
   pod 'Alamofire'
   pod 'Swinject'

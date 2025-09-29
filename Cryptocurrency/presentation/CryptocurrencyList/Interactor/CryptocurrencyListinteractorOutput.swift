@@ -9,6 +9,7 @@
 import Foundation
 
 protocol CryptocurrencyListInteractorOutput: AnyObject {
-    
+    func didFetchCryptos(coins: [Coin])
 }
+
 

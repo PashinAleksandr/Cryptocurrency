@@ -30,7 +30,8 @@ class detailsViewController: UIViewController, detailsViewInput {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = 8
-        stack.alignment = .leading
+        stack.alignment = .fill
+        stack.distribution = .fill
         return stack
     }()
     
@@ -106,8 +107,11 @@ class detailsViewController: UIViewController, detailsViewInput {
     }
     
     func configure(with coin: Coin) {
-        parametersStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        // TODO: добавь пунктирную линию под каждую строку + значение прибей к правому борту
+        parametersStack.arrangedSubviews.forEach {
+            parametersStack.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
+        // TODO: Вынеси в стринги и подставь сюда значение
         let params: [(String, String)] = [
             ("Capitalization", coin.capitalization),
             ("Change For Day", "\(coin.changeForDay) %"),
@@ -117,34 +121,56 @@ class detailsViewController: UIViewController, detailsViewInput {
             ("Hashing Algorithm", coin.hasingAlgorithm)
         ]
         
-        params.forEach { title, value in
-            let row = UIStackView()
-            row.axis = .horizontal
-            row.distribution = .fill
-            row.alignment = .firstBaseline
-            row.spacing = 8
+        for (title, value) in params {
+            let container = UIStackView()
+            container.axis = .vertical
+            container.alignment = .fill
+            container.distribution = .fill
+            container.spacing = 4
+            
+            let row = UIView()
             
             let titleLabel = UILabel()
             titleLabel.font = .boldSystemFont(ofSize: 16)
             titleLabel.textColor = .label
             titleLabel.text = title
+            titleLabel.numberOfLines = 1
+            titleLabel.setContentHuggingPriority(.required, for: .horizontal)
             
             let valueLabel = UILabel()
             valueLabel.font = .systemFont(ofSize: 16)
             valueLabel.textColor = .secondaryLabel
             valueLabel.text = value
             valueLabel.textAlignment = .right
-            valueLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
-            
-            row.addArrangedSubview(titleLabel)
-            row.addArrangedSubview(valueLabel)
-            
-            parametersStack.addArrangedSubview(row)
-            
-            titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+            valueLabel.numberOfLines = 1
             valueLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+            
+            row.addSubview(titleLabel)
+            row.addSubview(valueLabel)
+            
+            titleLabel.snp.makeConstraints { make in
+                make.top.bottom.equalToSuperview().inset(4)
+                make.leading.equalToSuperview()
+            }
+            
+            valueLabel.snp.makeConstraints { make in
+                make.top.bottom.equalToSuperview().inset(4)
+                make.trailing.equalToSuperview()
+                make.leading.greaterThanOrEqualTo(titleLabel.snp.trailing).offset(8)
+            }
+            
+            container.addArrangedSubview(row)
+            
+            let dashedLine = DashedLineView()
+            dashedLine.snp.makeConstraints { make in
+                make.height.equalTo(1)
+            }
+            container.addArrangedSubview(dashedLine)
+            
+            parametersStack.addArrangedSubview(container)
         }
     }
+    
     
     @objc private func favoriteTapped() {
         output?.didToggleFavorite()

@@ -33,7 +33,6 @@ class CryptocurrencyListModuleAssembly: Assembly {
             presenter.router = router
             
             viewController.output = presenter
-            viewController.moduleInput = presenter
             
             let interactor = CryptocurrencyListInteractor()
             presenter.interactor = interactor

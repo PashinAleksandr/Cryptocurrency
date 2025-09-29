@@ -16,24 +16,41 @@ import SnapKit
 class CryptocurrencyListViewController: UIViewController, CryptocurrencyListViewInput, UITableViewDataSource, UITableViewDelegate {
     
     private let tableView = UITableView()
+    private let noInternetView = NoInternetView()
+    
     var output: CryptocurrencyListViewOutput?
     var cryptos: [Coin] = []
     private var disposeBag = DisposeBag()
     
-    var eth:Coin = Coin(capitalization: "daegag", changeForDay: 2.532, proposal: 1245215.1, changePrice: 12451, confirmationAlgorithm: "fsf", price: 124, hasingAlgorithm: "afe", fullCoinName: "eth", shortCoinName: "e", coinId: 0)
-    var sam:Coin = Coin(capitalization: "adfgweg", changeForDay: 467, proposal: 90983465, changePrice: 25436, confirmationAlgorithm: "kookrgnjogs", price: 34647574, hasingAlgorithm: "okngnjg", fullCoinName: "samthing", shortCoinName: "sam", coinId: 1)
-    var test:Coin = Coin(capitalization: "iusaoiufa", changeForDay: 90781234, proposal: 967345, changePrice: 7142839, confirmationAlgorithm: "lvhjfsdhvs", price: 79854, hasingAlgorithm: "ohjpefohi[efw[o", fullCoinName: "test124", shortCoinName: "test", coinId: 9)
+    private lazy var emptyStateView = ActionView(
+        viewModel: ActionViewData(
+            title: "Список монет пуст",
+            buttonName: "Обновить",
+            didTapped: { [weak self] in
+                self?.reloadData()
+            }
+        )
+    )
+
+    
+    let coin = Coin(capitalization: "250000", changeForDay: 0.5, proposal: 500, changePrice: 23000, confirmationAlgorithm: "ETTPS", price: 25000, hasingAlgorithm: "2fa", fullCoinName: "BissCoin", shortCoinName: "biss", coinId: 1)
+    let coin0 = Coin(capitalization: "300000", changeForDay: 50000, proposal: 1000, changePrice: 27000, confirmationAlgorithm: "https", price: 300000, hasingAlgorithm: "SOAP", fullCoinName: "Bitcoin", shortCoinName: "BTC", coinId: 2)
+    let coin1 = Coin(capitalization: "1000000000", changeForDay: 10000, proposal: 12341, changePrice: 50000, confirmationAlgorithm: "TSP/ip", price: 150000, hasingAlgorithm: "SOS", fullCoinName: "Ethirium", shortCoinName: "Ethir", coinId: 3)
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         output?.viewIsReady()
         title = String.home.firstUppercased()
         view.backgroundColor = .systemBackground
-        setupTableView()
         
+        setupTableView()
+        setupNoInternetView()
+        setupEmptyState()
     }
     
-    func setupTableView() {
+    private func setupTableView() {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -42,11 +59,36 @@ class CryptocurrencyListViewController: UIViewController, CryptocurrencyListView
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CryptocurrencyTableViewCell.self, forCellReuseIdentifier: "CryptoCell")
-        cryptos = [eth, sam, test]
+        cryptos = [coin, coin0, coin1]
+
     }
     
-    func setupInitialState() {
+    private func setupNoInternetView() {
+        view.addSubview(noInternetView)
+        noInternetView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
+        noInternetView.isHidden = true
+        
+        noInternetView.retryTap
+            .subscribe(onNext: { [weak self] in
+                print("Retry tapped in CryptocurrencyListViewController")
+                self?.reloadData()
+                self?.noInternetView.showLoading()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func setupInitialState() {}
+    
+    private func setupEmptyState() {
+        view.addSubview(emptyStateView)
+        emptyStateView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.7)
+        }
+        emptyStateView.isHidden = true
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -68,26 +110,32 @@ class CryptocurrencyListViewController: UIViewController, CryptocurrencyListView
         output?.didselect(coin: crypto)
     }
     
+    func showCryptos(_ coins: [Coin]) {
+        self.cryptos = coins
+        tableView.reloadData()
+        
+        let hasData = !coins.isEmpty
+        tableView.isHidden = !hasData
+        emptyStateView.isHidden = hasData
+    }
 }
 
 extension CryptocurrencyListViewController {
     func checkConnection() {
-        let isInternetAvailable = NetworkMonitor.shared.isConnected // пример
+        let isInternetAvailable = NetworkMonitor.shared.isConnected
         let hasData = !cryptos.isEmpty
         
         if !isInternetAvailable || !hasData {
-            let noInternetVC = NoInternetViewController()
-            
-            noInternetVC.retryTap.subscribe(onNext: { [weak self] in
-                self?.reloadData()
-            }).disposed(by: disposeBag)
-            
-            present(noInternetVC, animated: true)
+            noInternetView.isHidden = false
+            noInternetView.hideLoading()
+        } else {
+            noInternetView.isHidden = true
         }
     }
     
     func reloadData() {
-        // Здесь снова дергаем сервер или делаем повторный запрос
-        dismiss(animated: true) // убираем экран если данные появились
+        // loading...
+        noInternetView.hideLoading()
+        noInternetView.isHidden = true
     }
 }

@@ -10,28 +10,41 @@ import RxRelay
 import RxCocoa
 import Foundation
 
+protocol CoinProviderProtocol {
+    func fetchCoins(by ids: [Int], completion: @escaping ([Coin]) -> Void)
+}
+
 class FavoritesService: FavoritesServiceProtocol {
     
-    private let storageKey = "favorites.coins"
+    private let storageKey = "favorites.coinIds"
     internal let favorites = BehaviorRelay<[Coin]>(value: [])
     
-    init() {
+    private let coinProvider: CoinProviderProtocol
+    
+    init(coinProvider: CoinProviderProtocol) {
+        self.coinProvider = coinProvider
         loadFromDisk()
     }
     
     func add(_ coin: Coin) {
-        var current = favorites.value
-        guard !current.contains(coin) else { return }
-        current.append(coin)
-        favorites.accept(current)
-        saveToDisk(current)
+        var currentIds = loadIds()
+        guard !currentIds.contains(coin.coinId) else { return }
+        currentIds.append(coin.coinId)
+        saveIds(currentIds)
+        
+        var currentCoins = favorites.value
+        currentCoins.append(coin)
+        favorites.accept(currentCoins)
     }
     
     func remove(_ coin: Coin) {
-        var current = favorites.value
-        current.removeAll { $0 == coin }
-        favorites.accept(current)
-        saveToDisk(current)
+        var currentIds = loadIds()
+        currentIds.removeAll { $0 == coin.coinId }
+        saveIds(currentIds)
+        
+        var currentCoins = favorites.value
+        currentCoins.removeAll { $0.coinId == coin.coinId }
+        favorites.accept(currentCoins)
     }
     
     func toggle(_ coin: Coin) {
@@ -43,22 +56,36 @@ class FavoritesService: FavoritesServiceProtocol {
     }
     
     func isFavorite(_ coin: Coin) -> Bool {
-        return favorites.value.contains(coin)
+        return loadIds().contains(coin.coinId)
     }
-    // TODO: сохраняй только id а остальное догружай
-    private func saveToDisk(_ coins: [Coin]) {
-        let encoder = JSONEncoder()
-        if let data = try? encoder.encode(coins) {
-            UserDefaults.standard.set(data, forKey: storageKey)
-        }
+        
+    private func saveIds(_ ids: [Int]) {
+        UserDefaults.standard.set(ids, forKey: storageKey)
+    }
+    
+    private func loadIds() -> [Int] {
+        return UserDefaults.standard.array(forKey: storageKey) as? [Int] ?? []
     }
     
     private func loadFromDisk() {
-        guard let data = UserDefaults.standard.data(forKey: storageKey) else { return }
-        let decoder = JSONDecoder()
-        if let saved = try? decoder.decode([Coin].self, from: data) {
-            favorites.accept(saved)
+        let ids = loadIds()
+        guard !ids.isEmpty else { return }
+        
+        coinProvider.fetchCoins(by: ids) { [weak self] coins in
+            self?.favorites.accept(coins)
         }
     }
 }
 
+class MockCoinProvider: CoinProviderProtocol {
+    func fetchCoins(by ids: [Int], completion: @escaping ([Coin]) -> Void) {
+        // add server Data to test
+        let mockCoins = [
+            Coin(capitalization: "123", changeForDay: 1.2, proposal: 12345,
+                 changePrice: 100, confirmationAlgorithm: "PoW",
+                 price: 1500, hasingAlgorithm: "SHA-256",
+                 fullCoinName: "Ethereum", shortCoinName: "ETH", coinId: 0)
+        ]
+        completion(mockCoins.filter { ids.contains($0.coinId) })
+    }
+}

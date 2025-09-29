@@ -6,8 +6,8 @@
 //  Copyright © 2025 bigTopCampany. All rights reserved.
 //
 
-import ViperMcFlurry
+import Foundation
 
-protocol detailsModuleInput: AnyObject, RamblerViperModuleInput {
+protocol detailsModuleInput: AnyObject {
     func configure(with coin: Coin)
 }

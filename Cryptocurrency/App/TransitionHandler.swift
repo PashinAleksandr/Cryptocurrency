@@ -48,7 +48,7 @@ extension UIViewController: TransitionHandlerProtocol {
         let count = navigationController?.children.count ?? 0
         
         if hasNavigationStack, count > 1 {
-            navigationController?.popViewController(animated: animated)
+            navController?.popViewController(animated: animated)
         } else if let vc = self.presentingViewController {
             vc.dismiss(animated: animated)
         }

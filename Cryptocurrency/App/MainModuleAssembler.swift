@@ -46,10 +46,16 @@ extension MainModuleAssembler {
 
 class ServiceAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(FavoritesServiceProtocol.self) { _ in
-            FavoritesService()
+        container.register(CoinProviderProtocol.self) { _ in
+            MockCoinProvider()
+        }.inObjectScope(.container)
+        
+        container.register(FavoritesServiceProtocol.self) { r in
+            let provider = r.resolve(CoinProviderProtocol.self)!
+            return FavoritesService(coinProvider: provider)
         }.inObjectScope(.container)
     }
 }
+
 
 

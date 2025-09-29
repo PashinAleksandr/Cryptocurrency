@@ -9,6 +9,6 @@
 import Foundation
 
 protocol CryptocurrencyListViewInput: UIViewInput {
- 
     func setupInitialState()
+    func showCryptos(_ coins: [Coin])
 }

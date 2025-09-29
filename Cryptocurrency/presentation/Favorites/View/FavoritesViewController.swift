@@ -19,19 +19,25 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
     private var favorites: [Coin] = []
     private let disposeBag = DisposeBag()
     
-    // вынеси в отдельный класс и присвой сюда готовую вью
-    private let emptyStateView = UIView()
-    private let emptyLabel = UILabel()
-    private let addButton = UIButton(type: .system)
-    
+    private lazy var emptyStateView = ActionView(
+        viewModel: ActionViewData(
+            title: "В избранном пусто",
+            buttonName: "Перейти к списку",
+            didTapped: { [weak self] in
+                self?.output?.didselectCoinListVC()
+            }
+        )
+    )
+        
     override func viewDidLoad() {
         super.viewDidLoad()
-        output?.viewIsReady()
         title = "Избранное"
         view.backgroundColor = .systemBackground
+        
         setupTableView()
         setupEmptyState()
-        updateEmptyState()
+        
+        output?.viewIsReady()
     }
     
     private func setupTableView() {
@@ -39,7 +45,6 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CryptocurrencyTableViewCell.self)
@@ -51,32 +56,6 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
             make.center.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.7)
         }
-        
-        emptyLabel.text = "Добавить в избранное?"
-        emptyLabel.textAlignment = .center
-        emptyLabel.font = .boldSystemFont(ofSize: 18)
-        
-        addButton.setTitle("Add", for: .normal)
-        addButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        
-        emptyStateView.addSubview(emptyLabel)
-        emptyStateView.addSubview(addButton)
-        
-        emptyLabel.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-        }
-        
-        addButton.snp.makeConstraints { make in
-            make.top.equalTo(emptyLabel.snp.bottom).offset(16)
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
-        
-        addButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.output?.didselectCoinListVC()
-            })
-            .disposed(by: disposeBag)
     }
     
     private func updateEmptyState() {
@@ -85,42 +64,30 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
         emptyStateView.isHidden = !isEmpty
     }
     
-    private func navigateToCryptoList() {
-        let vc = CryptocurrencyListViewController()
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        tableView.reloadData()
-        updateEmptyState()
-    }
-    
     func showFavorites(_ coins: [Coin]) {
         self.favorites = coins
         tableView.reloadData()
         updateEmptyState()
     }
     
-    func setupInitialState() { }
+    func setupInitialState() {}
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return favorites.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(CryptocurrencyTableViewCell.self, indexPath: indexPath) 
+        let cell = tableView.dequeueReusableCell(CryptocurrencyTableViewCell.self, indexPath: indexPath)
         let crypto = favorites[indexPath.row]
         cell.configure(with: crypto)
         return cell
     }
-        
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let coin = favorites[indexPath.row]
-        
         let factory = DetailsFactory(coin: coin)
-        self.showModule(usingFactory: factory)
+        showModule(usingFactory: factory)
     }
     
     func tableView(_ tableView: UITableView,
@@ -133,5 +100,11 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
             completion(true)
         }
         return UISwipeActionsConfiguration(actions: [delete])
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+        updateEmptyState()
     }
 }

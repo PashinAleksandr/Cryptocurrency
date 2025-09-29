@@ -10,23 +10,30 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class NoInternetViewController: UIViewController {
+class NoInternetView: UIView {
     
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let messageLabel = UILabel()
     private let retryButton = UIButton(type: .system)
     private var disposeBag = DisposeBag()
+    
     let retryTap = PublishRelay<Void>()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
         setupUI()
     }
     
     private func setupUI() {
+        backgroundColor = .systemBackground
+        
         let containerView = UIView()
-        view.addSubview(containerView)
+        addSubview(containerView)
         
         containerView.snp.makeConstraints { make in
             make.center.equalToSuperview()
@@ -34,7 +41,6 @@ class NoInternetViewController: UIViewController {
         }
         
         containerView.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
         activityIndicator.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
@@ -63,6 +69,26 @@ class NoInternetViewController: UIViewController {
         retryButton.rx.tap
             .bind(to: retryTap)
             .disposed(by: disposeBag)
+        
+        showLoading()
+    }
+    
+    func setMessage(_ text: String) {
+        messageLabel.text = text
+    }
+    
+    func showLoading() {
+        activityIndicator.startAnimating()
+        activityIndicator.isHidden = false
+        retryButton.isEnabled = false
+        retryButton.alpha = 0.5
+    }
+    
+    func hideLoading() {
+        activityIndicator.stopAnimating()
+        activityIndicator.isHidden = true
+        retryButton.isEnabled = true
+        retryButton.alpha = 1.0
     }
 }
 

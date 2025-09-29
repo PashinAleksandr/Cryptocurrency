@@ -26,4 +26,8 @@ class CryptocurrencyListPresenter: NSObject, CryptocurrencyListModuleInput, Cryp
 }
 
 extension CryptocurrencyListPresenter: CryptocurrencyListInteractorOutput {
+    func didFetchCryptos(coins: [Coin]) {
+        
+    }
+    
 }

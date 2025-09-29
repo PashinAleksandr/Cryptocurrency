@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 import RxCocoa
 import SnapKit
-// TODO: перенести ближе к ячейке
+
 class CoinCellViewModel {
     
     private let coin: Coin

@@ -33,7 +33,6 @@ class FavoritesModuleAssembly: Assembly {
             presenter.router = router
             
             viewController.output = presenter
-            viewController.moduleInput = presenter
             
             let favoritesService = resolver.resolve(FavoritesServiceProtocol.self)!
             let interactor = FavoritesInteractor()

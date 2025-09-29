@@ -11,3 +11,4 @@ import Foundation
 class detailsRouter: detailsRouterInput {
     weak var transitionHandler: TransitionHandlerProtocol?
 }
+
