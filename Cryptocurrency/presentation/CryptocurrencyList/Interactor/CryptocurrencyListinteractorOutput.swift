@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import RxSwift
 
 protocol CryptocurrencyListInteractorOutput: AnyObject {
-    func didFetchCryptos(coins: [Coin])
+    func didLoadCoins(_ coins: [Coin])
 }
 
 

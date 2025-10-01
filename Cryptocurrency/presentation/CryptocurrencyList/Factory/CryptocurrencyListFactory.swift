@@ -23,8 +23,9 @@ class CryptocurrencyListFactory: PresentationModuleFactory {
 
 class CryptocurrencyListModuleAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(CryptocurrencyListViewController.self) { (resolver: Resolver) in
+        container.register(CryptocurrencyListViewController.self) { resolver in
             let viewController = CryptocurrencyListViewController()
+            
             let router = CryptocurrencyListRouter()
             router.transitionHandler = viewController
             
@@ -32,13 +33,18 @@ class CryptocurrencyListModuleAssembly: Assembly {
             presenter.view = viewController
             presenter.router = router
             
-            viewController.output = presenter
-            
             let interactor = CryptocurrencyListInteractor()
-            presenter.interactor = interactor
             interactor.output = presenter
+            interactor.coinsService = resolver.resolve(CoinsServiceProtocol.self)
+            
+            presenter.interactor = interactor
+            viewController.output = presenter
             
             return viewController
         }.inObjectScope(.transient)
+        
+        container.register(CoinsServiceProtocol.self) { _ in
+            CoinsService()
+        }.inObjectScope(.container)
     }
 }

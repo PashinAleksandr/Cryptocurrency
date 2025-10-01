@@ -20,7 +20,7 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
     private let disposeBag = DisposeBag()
     
     private lazy var emptyStateView = ActionView(
-        viewModel: ActionViewData(
+        viewModel: ActionView.ViewModel(
             title: "В избранном пусто",
             buttonName: "Перейти к списку",
             didTapped: { [weak self] in

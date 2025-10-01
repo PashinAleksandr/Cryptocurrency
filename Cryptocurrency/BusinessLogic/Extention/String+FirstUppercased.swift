@@ -9,7 +9,8 @@ import Foundation
 
 extension String {
     func firstUppercased() -> String {
-        return self
+        guard let first = self.first else { return self }
+        return String(first).uppercased() + self.dropFirst()
     }
 }
 

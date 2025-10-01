@@ -39,6 +39,7 @@
 		D4432FC72E6DF5DD007CF2A0 /* MainModuleAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FC62E6DF5DD007CF2A0 /* MainModuleAssembler.swift */; };
 		D4432FCC2E6DF6D4007CF2A0 /* UIViewInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */; };
 		D4432FCE2E6DF8C0007CF2A0 /* TransitionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */; };
+		D4A5AC5B2E8ADE2E00C32DDB /* CoinService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A5AC5A2E8ADE2E00C32DDB /* CoinService.swift */; };
 		D4AEFAD42E7324E5004248E7 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AEFAD32E7324E5004248E7 /* TabBarController.swift */; };
 		D4B343E32E79BBA3006FC3EB /* Coin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B343E22E79BBA3006FC3EB /* Coin.swift */; };
 		D4B343E52E7AFAF1006FC3EB /* DetailsSegmentControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B343E42E7AFAF1006FC3EB /* DetailsSegmentControl.swift */; };
@@ -101,6 +102,7 @@
 		D4432FC62E6DF5DD007CF2A0 /* MainModuleAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModuleAssembler.swift; sourceTree = "<group>"; };
 		D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewInput.swift; sourceTree = "<group>"; };
 		D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionHandler.swift; sourceTree = "<group>"; };
+		D4A5AC5A2E8ADE2E00C32DDB /* CoinService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinService.swift; sourceTree = "<group>"; };
 		D4AEFAD32E7324E5004248E7 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D4B343E22E79BBA3006FC3EB /* Coin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coin.swift; sourceTree = "<group>"; };
 		D4B343E42E7AFAF1006FC3EB /* DetailsSegmentControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsSegmentControl.swift; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 			children = (
 				D4B343ED2E841629006FC3EB /* FavoritesServiceProtocol.swift */,
 				D4B343F02E8416A8006FC3EB /* FavoritesService.swift */,
+				D4A5AC5A2E8ADE2E00C32DDB /* CoinService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -599,6 +602,7 @@
 				C939C8527639E46B14A7D582 /* FavoritesPresenter.swift in Sources */,
 				D4B343F82E85AAEA006FC3EB /* CoinCellViewModel.swift in Sources */,
 				A717821C874D3354EBA1E9E7 /* FavoritesRouterInput.swift in Sources */,
+				D4A5AC5B2E8ADE2E00C32DDB /* CoinService.swift in Sources */,
 				1AA4C57735996A267A480620 /* FavoritesRouter.swift in Sources */,
 				19EA7AD0AD1DDDE899186056 /* FavoritesinteractorInput.swift in Sources */,
 				71E9BD538FEB9A7AE2E09D2D /* FavoritesinteractorOutput.swift in Sources */,

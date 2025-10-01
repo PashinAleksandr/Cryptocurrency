@@ -7,9 +7,9 @@
 //
 
 import Foundation
+import RxSwift
 
 protocol CryptocurrencyListInteractorInput: AnyObject {
-    
-    
+    func loadCoins()
 }
 

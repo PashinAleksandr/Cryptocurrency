@@ -79,7 +79,7 @@ class FavoritesService: FavoritesServiceProtocol {
 
 class MockCoinProvider: CoinProviderProtocol {
     func fetchCoins(by ids: [Int], completion: @escaping ([Coin]) -> Void) {
-        // add server Data to test
+      
         let mockCoins = [
             Coin(capitalization: "123", changeForDay: 1.2, proposal: 12345,
                  changePrice: 100, confirmationAlgorithm: "PoW",

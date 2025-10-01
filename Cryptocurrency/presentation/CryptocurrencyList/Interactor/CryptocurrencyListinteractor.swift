@@ -7,9 +7,23 @@
 //
 
 import Foundation
+import RxSwift
 
-class CryptocurrencyListInteractor: CryptocurrencyListInteractorInput {
+
+final class CryptocurrencyListInteractor: CryptocurrencyListInteractorInput {
     
-    weak var output: CryptocurrencyListInteractorOutput!
+    weak var output: CryptocurrencyListInteractorOutput?
+    var coinsService: CoinsServiceProtocol!
+    private let disposeBag = DisposeBag()
     
+    func loadCoins() {
+        coinsService.fetchCoins()
+        coinsService.coins
+            .asObservable()
+            .subscribe(onNext: { [weak self] coins in
+                self?.output?.didLoadCoins(coins)
+            })
+            .disposed(by: disposeBag)
+    }
 }
+

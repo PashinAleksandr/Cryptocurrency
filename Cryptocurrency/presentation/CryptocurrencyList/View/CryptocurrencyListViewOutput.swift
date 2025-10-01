@@ -8,8 +8,8 @@
 
 import Foundation
 
-protocol CryptocurrencyListViewOutput {
-    
-    func didselect(coin: Coin)
+protocol CryptocurrencyListViewOutput: AnyObject {
     func viewIsReady()
+    func didSelectCoin(_ coin: Coin)
 }
+
