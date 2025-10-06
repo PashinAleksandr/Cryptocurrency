@@ -1,9 +1,5 @@
 //
-//  CryptocurrencyListFactory.swift
-//  Cryptocurrency
-//
-//  Created by APashin on 09/09/2025.
-//  Copyright © 2025 bigTopCampany. All rights reserved.
+//  CryptocurrencyListModuleAssembly.swift
 //
 
 import Foundation
@@ -12,8 +8,7 @@ import Swinject
 class CryptocurrencyListFactory: PresentationModuleFactory {
     
     func instantiateViewController() -> CryptocurrencyListViewController {
-        let viewController = MainModuleAssembler.resolver.resolve(CryptocurrencyListViewController.self)!
-        return viewController
+        return MainModuleAssembler.resolver.resolve(CryptocurrencyListViewController.self)!
     }
     
     func instantiateTransitionHandler() -> TransitionHandlerProtocol {
@@ -24,13 +19,13 @@ class CryptocurrencyListFactory: PresentationModuleFactory {
 class CryptocurrencyListModuleAssembly: Assembly {
     func assemble(container: Container) {
         container.register(CryptocurrencyListViewController.self) { resolver in
-            let viewController = CryptocurrencyListViewController()
+            let vc = CryptocurrencyListViewController()
             
             let router = CryptocurrencyListRouter()
-            router.transitionHandler = viewController
+            router.transitionHandler = vc
             
             let presenter = CryptocurrencyListPresenter()
-            presenter.view = viewController
+            presenter.view = vc
             presenter.router = router
             
             let interactor = CryptocurrencyListInteractor()
@@ -38,9 +33,9 @@ class CryptocurrencyListModuleAssembly: Assembly {
             interactor.coinsService = resolver.resolve(CoinsServiceProtocol.self)
             
             presenter.interactor = interactor
-            viewController.output = presenter
+            vc.output = presenter
             
-            return viewController
+            return vc
         }.inObjectScope(.transient)
         
         container.register(CoinsServiceProtocol.self) { _ in

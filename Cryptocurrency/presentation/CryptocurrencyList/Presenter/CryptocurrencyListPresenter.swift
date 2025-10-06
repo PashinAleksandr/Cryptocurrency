@@ -8,15 +8,14 @@
 
 import Foundation
 
-
 final class CryptocurrencyListPresenter: CryptocurrencyListViewOutput, CryptocurrencyListInteractorOutput {
-    
-    weak var view: CryptocurrencyListViewInput?
+    weak var view: CryptocurrencyListViewInput!
     var interactor: CryptocurrencyListInteractorInput!
     var router: CryptocurrencyListRouterInput!
     
     func viewIsReady() {
-        view?.setupInitialState()
+        view.setupInitialState()
+        interactor.subscribeToCoins()
         interactor.loadCoins()
     }
     
@@ -24,7 +23,7 @@ final class CryptocurrencyListPresenter: CryptocurrencyListViewOutput, Cryptocur
         router.openDetails(for: coin)
     }
     
-    func didLoadCoins(_ coins: [Coin]) {
-        view?.showCoins(coins)
+    func didUpdateCoins(_ coins: [Coin]) {
+        view.showCoins(coins)
     }
 }

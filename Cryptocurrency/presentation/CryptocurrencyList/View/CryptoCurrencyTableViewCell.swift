@@ -4,12 +4,11 @@
 //
 //  Created by Aleksandr Pashin on 19.09.2025.
 //
+//
+//  CryptocurrencyTableViewCell.swift
+//
 
-import Foundation
 import UIKit
-import RxSwift
-import RxRelay
-import RxCocoa
 import SnapKit
 
 class CryptocurrencyTableViewCell: UITableViewCell {
@@ -44,8 +43,6 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         shortNameLabel.textColor = .secondaryLabel
         
         priceLabel.font = .systemFont(ofSize: 16, weight: .semibold)
-        
-        
     }
     
     func setupLayout() {
@@ -61,9 +58,9 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         }
         
         nameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(2)
+            make.top.equalToSuperview().offset(8)
             make.leading.equalTo(iconImageView.snp.trailing).offset(12)
-            
+            make.trailing.lessThanOrEqualTo(priceLabel.snp.leading).offset(-8)
         }
         
         shortNameLabel.snp.makeConstraints { make in
@@ -75,6 +72,7 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         priceLabel.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(16)
             make.centerY.equalToSuperview()
+            make.width.greaterThanOrEqualTo(80)
         }
     }
     
@@ -85,18 +83,18 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         
         if let oldPrice = oldPrice {
             if crypto.price > oldPrice {
-                priceLabel.textColor = .systemRed
-            } else if crypto.price < oldPrice {
                 priceLabel.textColor = .systemGreen
+            } else if crypto.price < oldPrice {
+                priceLabel.textColor = .systemRed
             } else {
                 priceLabel.textColor = .label
             }
         }
         oldPrice = crypto.price
         
-        
+        iconImageView.image = UIImage(systemName: "bitcoinsign.circle")
         if let url = crypto.iconURL {
-            DispatchQueue.global().async {
+            DispatchQueue.global(qos: .userInitiated).async {
                 if let data = try? Data(contentsOf: url),
                    let image = UIImage(data: data) {
                     DispatchQueue.main.async {
@@ -104,9 +102,6 @@ class CryptocurrencyTableViewCell: UITableViewCell {
                     }
                 }
             }
-        } else {
-            iconImageView.image = UIImage(systemName: "bitcoinsign.circle")
         }
     }
 }
-

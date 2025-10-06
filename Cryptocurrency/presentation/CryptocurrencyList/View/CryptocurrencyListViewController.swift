@@ -6,14 +6,14 @@
 //  Copyright © 2025 bigTopCampany. All rights reserved.
 //
 
-import Foundation
-import UIKit
-import RxSwift
-import RxRelay
-import RxCocoa
-import SnapKit
+//
+//  CryptocurrencyListViewController.swift
+//
 
 import UIKit
+import SnapKit
+import RxSwift
+import RxCocoa
 
 final class CryptocurrencyListViewController: UIViewController, CryptocurrencyListViewInput {
     
@@ -28,8 +28,6 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         output.viewIsReady()
     }
     
-    // MARK: - ViewInput
-    
     func setupInitialState() {
         tableView.reloadData()
     }
@@ -41,8 +39,6 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         }
     }
     
-    // MARK: - UI
-    
     private func setupUI() {
         title = "Cryptocurrencies"
         view.backgroundColor = .systemBackground
@@ -50,24 +46,20 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(CryptocurrencyTableViewCell.self, forCellReuseIdentifier: "CoinCell")
+        tableView.tableFooterView = UIView()
         
         view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        tableView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
 
 extension CryptocurrencyListViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return coins.count
-    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { coins.count }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CoinCell", for: indexPath) as? CryptocurrencyTableViewCell else {
             return UITableViewCell()
         }
@@ -82,6 +74,3 @@ extension CryptocurrencyListViewController: UITableViewDataSource, UITableViewDe
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
-
-
-

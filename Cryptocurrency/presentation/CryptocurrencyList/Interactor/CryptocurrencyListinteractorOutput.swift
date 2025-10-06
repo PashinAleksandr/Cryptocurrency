@@ -10,7 +10,5 @@ import Foundation
 import RxSwift
 
 protocol CryptocurrencyListInteractorOutput: AnyObject {
-    func didLoadCoins(_ coins: [Coin])
+    func didUpdateCoins(_ coins: [Coin])
 }
-
-

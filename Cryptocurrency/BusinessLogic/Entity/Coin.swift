@@ -2,14 +2,11 @@
 //  Coin.swift
 //  Cryptocurrency
 //
-//  Created by Aleksandr Pashin on 16.09.2025.
-//
 
 import Foundation
-import UIKit
 import ObjectMapper
 
-class Coin: Mappable {
+final class Coin: Mappable {
     
     var coinId: Int = 0
     var capitalization: String = ""
@@ -23,18 +20,19 @@ class Coin: Mappable {
     var shortCoinName: String = ""
     var iconURL: URL?
     
-    // стандартный инициализатор (если нужен вручную)
-    init(capitalization: String,
-         changeForDay: Double,
-         proposal: Double,
-         changePrice: Double,
-         confirmationAlgorithm: String,
-         price: Double,
-         hasingAlgorithm: String,
-         fullCoinName: String,
-         shortCoinName: String,
+    init() {}
+    
+    init(capitalization: String = "",
+         changeForDay: Double = 0,
+         proposal: Double = 0,
+         changePrice: Double = 0,
+         confirmationAlgorithm: String = "",
+         price: Double = 0,
+         hasingAlgorithm: String = "",
+         fullCoinName: String = "",
+         shortCoinName: String = "",
          iconURL: URL? = nil,
-         coinId: Int) {
+         coinId: Int = 0) {
         self.capitalization = capitalization
         self.changeForDay = changeForDay
         self.proposal = proposal
@@ -48,59 +46,58 @@ class Coin: Mappable {
         self.coinId = coinId
     }
     
-    // MARK: - Mappable
-    required init?(map: Map) {
-        // можно оставить пустым — значения проставятся в mapping
-    }
+    required init?(map: Map) { }
     
     func mapping(map: Map) {
-        // API иногда возвращает id как String, иногда как Int.
-        // используем TransformOf чтобы парсить "123" -> Int(123) и Int -> String при обратной сериализации
-        let stringToIntTransform = TransformOf<Int, String>(fromJSON: { (value: String?) -> Int? in
-            guard let v = value else { return nil }
-            return Int(v)
-        }, toJSON: { (value: Int?) -> String? in
-            guard let v = value else { return nil }
-            return String(v)
+        let stringToInt = TransformOf<Int, Any>(fromJSON: { (value: Any?) -> Int? in
+            if let v = value as? Int { return v }
+            if let s = value as? String { return Int(s) }
+            return nil
+        }, toJSON: { (value: Int?) -> Any? in
+            return value
         })
         
-        // пробуем сначала строковый id -> int
-        coinId                  <- (map["id"], stringToIntTransform)
-        // если API отдаёт id как Int (не строкой), ObjectMapper выше не сработает — пробуем также обычный Int mapping
+        let stringToDouble = TransformOf<Double, Any>(fromJSON: { (value: Any?) -> Double? in
+            if let v = value as? Double { return v }
+            if let v = value as? Int { return Double(v) }
+            if let s = value as? String { return Double(s) }
+            return nil
+        }, toJSON: { (value: Double?) -> Any? in
+            return value
+        })
+        
+        coinId                  <- (map["ID"], stringToInt)
         if coinId == 0 {
-            coinId <- map["id"]
+            coinId <- (map["id"], stringToInt)
         }
         
-        fullCoinName            <- map["name"]
-        shortCoinName           <- map["symbol"]
+        fullCoinName            <- map["NAME"]
+        if fullCoinName.isEmpty { fullCoinName <- map["name"] }
         
-        // некоторые поля могут быть строки в API, поэтому используем временные переменные и конвертации при необходимости
-        // price и прочие ожидаем как Double
-        price                   <- map["priceUsd"]     // coincap sample key
-        capitalization          <- map["marketCapUsd"] // coincap sample key
-        changeForDay            <- map["changePercent24Hr"] // coincap sample key
-        proposal                <- map["supply"]       // coincap sample key
-        // Если у тебя другие ключи — поправь ключи под реальный API.
+        shortCoinName           <- map["SYMBOL"]
+        if shortCoinName.isEmpty { shortCoinName <- map["symbol"] }
         
-        // если в другом API используются другие ключи (например "price_usd"), добавь альтернативы:
-        if price == 0 {
-            price <- map["price_usd"]
-        }
-        if capitalization.isEmpty {
-            capitalization <- map["market_cap_usd"]
-        }
-        if changeForDay == 0 {
-            changeForDay <- map["percent_change_24h"]
-        }
-        if proposal == 0 {
-            proposal <- map["total_supply"]
-        }
+        price                   <- (map["PRICE_USD"], stringToDouble)
+        if price == 0 { price <- (map["PRICE_USD"], stringToDouble) }
         
-        // Остальные (если есть)
-        changePrice             <- map["change_price"]
-        confirmationAlgorithm   <- map["confirmation_algorithm"]
-        hasingAlgorithm         <- map["hashing_algorithm"]
-        iconURL                 <- (map["icon"], URLTransform())
+        capitalization          <- map["TOTAL_MKT_CAP_USD"]
+        if capitalization.isEmpty { capitalization <- map["TOTAL_MKT_CAP_USD"] }
+        
+        changeForDay            <- (map["SPOT_MOVING_7_DAY_CHANGE_PERCENTAGE_USD"], stringToDouble)
+        if changeForDay == 0 { changeForDay <- (map["SPOT_MOVING_24_HOUR_CHANGE_PERCENTAGE_USD"], stringToDouble) }
+        if changeForDay == 0 { changeForDay <- (map["changePercent24Hr"], stringToDouble) }
+        
+        proposal                <- (map["SUPPLY_FUTURE"], stringToDouble)
+        if proposal == 0 { proposal <- (map["SUPPLY_TOTAL"], stringToDouble) }
+        
+        changePrice             <- (map["PRICE_CONVERSION_VALUE"], stringToDouble)
+        confirmationAlgorithm   <- map["ASSET_DESCRIPTION_SNIPPET"]
+        hasingAlgorithm         <- map["ASSET_TYPE"]
+        
+        iconURL                 <- (map["LOGO_URL"], URLTransform())
+        if iconURL == nil {
+            iconURL <- (map["logo_url"], URLTransform())
+        }
     }
 }
 

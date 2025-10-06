@@ -44,6 +44,9 @@ extension MainModuleAssembler {
     
 }
 
+
+import Swinject
+
 class ServiceAssembly: Assembly {
     func assemble(container: Container) {
         container.register(CoinProviderProtocol.self) { _ in
@@ -56,6 +59,5 @@ class ServiceAssembly: Assembly {
         }.inObjectScope(.container)
     }
 }
-
 
 
