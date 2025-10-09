@@ -31,6 +31,10 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         setupUI()
         setupLayout()
     }
+    
+    override func prepareForReuse() {
+        //вызывается когда переиспользуется
+    }
     private func setupUI() {
         selectionStyle = .none
         

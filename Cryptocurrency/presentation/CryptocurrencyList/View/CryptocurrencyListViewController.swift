@@ -73,4 +73,6 @@ extension CryptocurrencyListViewController: UITableViewDataSource, UITableViewDe
         output.didSelectCoin(coin)
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    
 }

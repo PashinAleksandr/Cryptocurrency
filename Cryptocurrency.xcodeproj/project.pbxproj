@@ -36,6 +36,8 @@
 		C5AE8625778C1A199938FF4E /* FavoritesFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 050A182F2AF4077447297B81 /* FavoritesFactory.swift */; };
 		C939C8527639E46B14A7D582 /* FavoritesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4E7573AD1738DD005DB9D5 /* FavoritesPresenter.swift */; };
 		D3ED182C3A3288029D0C3E0F /* FavoritesViewInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B358C926C4B318B4DE5114 /* FavoritesViewInput.swift */; };
+		D41BA7C02E957A330061C4CB /* ChartDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41BA7BF2E957A330061C4CB /* ChartDataModel.swift */; };
+		D41BA7C22E957A590061C4CB /* ChartDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41BA7C12E957A590061C4CB /* ChartDataService.swift */; };
 		D4432FC72E6DF5DD007CF2A0 /* MainModuleAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FC62E6DF5DD007CF2A0 /* MainModuleAssembler.swift */; };
 		D4432FCC2E6DF6D4007CF2A0 /* UIViewInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */; };
 		D4432FCE2E6DF8C0007CF2A0 /* TransitionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */; };
@@ -99,6 +101,8 @@
 		BB4E7573AD1738DD005DB9D5 /* FavoritesPresenter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FavoritesPresenter.swift; sourceTree = "<group>"; };
 		C2E5BB380C14A909ED5C13B0 /* Pods_Cryptocurrency.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cryptocurrency.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C41FF8912F587EBFE2EC3F05 /* FavoritesRouterInput.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FavoritesRouterInput.swift; sourceTree = "<group>"; };
+		D41BA7BF2E957A330061C4CB /* ChartDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDataModel.swift; sourceTree = "<group>"; };
+		D41BA7C12E957A590061C4CB /* ChartDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDataService.swift; sourceTree = "<group>"; };
 		D4432FC62E6DF5DD007CF2A0 /* MainModuleAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModuleAssembler.swift; sourceTree = "<group>"; };
 		D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewInput.swift; sourceTree = "<group>"; };
 		D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionHandler.swift; sourceTree = "<group>"; };
@@ -367,6 +371,7 @@
 			isa = PBXGroup;
 			children = (
 				D4B343E22E79BBA3006FC3EB /* Coin.swift */,
+				D41BA7BF2E957A330061C4CB /* ChartDataModel.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -386,6 +391,7 @@
 			isa = PBXGroup;
 			children = (
 				D4B343ED2E841629006FC3EB /* FavoritesServiceProtocol.swift */,
+				D41BA7C12E957A590061C4CB /* ChartDataService.swift */,
 				D4B343F02E8416A8006FC3EB /* FavoritesService.swift */,
 				D4A5AC5A2E8ADE2E00C32DDB /* CoinService.swift */,
 			);
@@ -578,6 +584,7 @@
 				D4BB88132E6A01F80000CAF0 /* SceneDelegate.swift in Sources */,
 				D4432FCC2E6DF6D4007CF2A0 /* UIViewInput.swift in Sources */,
 				D4432FCE2E6DF8C0007CF2A0 /* TransitionHandler.swift in Sources */,
+				D41BA7C22E957A590061C4CB /* ChartDataService.swift in Sources */,
 				A6E44E63C0AA7739284C5C29 /* CryptocurrencyListFactory.swift in Sources */,
 				FF6C0957C5E7D543233B6A66 /* CryptocurrencyListViewInput.swift in Sources */,
 				D4B344022E885BB3006FC3EB /* DashedLineView.swift in Sources */,
@@ -622,6 +629,7 @@
 				D4B343FA2E85B237006FC3EB /* UITableViewCell+identifier.swift in Sources */,
 				F0BE90A9383C8734A667B94F /* detailsinteractorInput.swift in Sources */,
 				1CD6C5315E3893A4350AB402 /* detailsinteractorOutput.swift in Sources */,
+				D41BA7C02E957A330061C4CB /* ChartDataModel.swift in Sources */,
 				D4B343E32E79BBA3006FC3EB /* Coin.swift in Sources */,
 				D4B343F42E85A437006FC3EB /* NoInternetView.swift in Sources */,
 				6DBC07B9CC55B47273426863 /* detailsinteractor.swift in Sources */,

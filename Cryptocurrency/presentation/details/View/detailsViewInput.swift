@@ -7,11 +7,14 @@
 //
 
 import Foundation
+import Charts
 
 protocol detailsViewInput: UIViewInput {
     func setupInitialState()
     func configure(with coin: Coin)
     func updateFavoriteState(_ isFavorite: Bool)
+    func showLoading(_ isLoading: Bool)
+    func updateChartData(entries: [ChartDataEntry])
 }
 
 
