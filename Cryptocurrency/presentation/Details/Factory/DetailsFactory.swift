@@ -1,10 +1,3 @@
-//
-//  detailsFactory.swift
-//  Cryptocurrency
-//
-//  Created by APashin on 15/09/2025.
-//  Copyright © 2025 bigTopCampany. All rights reserved.
-//
 
 import Foundation
 import Swinject
@@ -16,8 +9,8 @@ class DetailsFactory: PresentationModuleFactory {
         self.coin = coin
     }
     
-    func instantiateViewController() -> detailsViewController {
-        let vc = MainModuleAssembler.resolver.resolve(detailsViewController.self, argument: coin)!
+    func instantiateViewController() -> DetailsViewController {
+        let vc = MainModuleAssembler.resolver.resolve(DetailsViewController.self, argument: coin)!
         return vc
     }
     
@@ -26,20 +19,20 @@ class DetailsFactory: PresentationModuleFactory {
     }
 }
 
-class detailsModuleAssembly: Assembly {
+class DetailsModuleAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(detailsViewController.self) { (resolver: Resolver, coin: Coin) in
-            let vc = detailsViewController()
-            let router = detailsRouter()
+        container.register(DetailsViewController.self) { (resolver: Resolver, coin: Coin) in
+            let vc = DetailsViewController()
+            let router = DetailsRouter()
             router.transitionHandler = vc
             
-            let presenter = detailsPresenter()
+            let presenter = DetailsPresenter()
             presenter.view = vc
             presenter.router = router
             
             vc.output = presenter
             
-            let interactor = detailsInteractor()
+            let interactor = DetailsInteractor()
             interactor.favoritesService = resolver.resolve(FavoritesServiceProtocol.self)
             interactor.output = presenter
             presenter.interactor = interactor
@@ -49,6 +42,4 @@ class detailsModuleAssembly: Assembly {
         }.inObjectScope(.transient)
     }
 }
-
-
 

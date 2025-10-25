@@ -1,9 +1,3 @@
-//
-//  DashedLineView.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 27.09.2025.
-//
 
 import UIKit
 

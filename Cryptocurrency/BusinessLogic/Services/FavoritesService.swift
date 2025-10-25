@@ -1,9 +1,3 @@
-//
-//  FavoritesService.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 24.09.2025.
-//
 
 import RxSwift
 import RxRelay

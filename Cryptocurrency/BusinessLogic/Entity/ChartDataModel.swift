@@ -1,18 +1,15 @@
-//
-//  ChartModels.swift
-//  Cryptocurrency
-//
-//  Created by ChatGPT on 07/10/2025.
-//
 
 import Foundation
 
 struct ChartPoint {
     let ts: TimeInterval
-    let price: Double
+    let open: Double
+    let high: Double
+    let low: Double
+    let close: Double
 }
 
-enum ChartRange {
+enum RangeInterval {
     case day
     case week
     case month

@@ -1,15 +1,7 @@
-//
-//  CryptoCell.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 19.09.2025.
-//
-//
-//  CryptocurrencyTableViewCell.swift
-//
 
 import UIKit
 import SnapKit
+import RxSwift
 
 class CryptocurrencyTableViewCell: UITableViewCell {
     
@@ -19,6 +11,8 @@ class CryptocurrencyTableViewCell: UITableViewCell {
     private let priceLabel = UILabel()
     
     private var oldPrice: Double?
+    
+    var disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -32,9 +26,6 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         setupLayout()
     }
     
-    override func prepareForReuse() {
-        //вызывается когда переиспользуется
-    }
     private func setupUI() {
         selectionStyle = .none
         
@@ -80,32 +71,59 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         }
     }
     
+    func defolteColor (label: UILabel) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            UIView.transition(with: label, duration: 0.5, options: .transitionCrossDissolve, animations: {
+                label.textColor = .black
+            })
+        }
+    }
+    
     func configure(with crypto: Coin) {
         nameLabel.text = crypto.fullCoinName
         shortNameLabel.text = crypto.shortCoinName
         priceLabel.text = String(format: "$%.2f", crypto.price)
         
-        if let oldPrice = oldPrice {
-            if crypto.price > oldPrice {
-                priceLabel.textColor = .systemGreen
-            } else if crypto.price < oldPrice {
-                priceLabel.textColor = .systemRed
-            } else {
-                priceLabel.textColor = .label
-            }
-        }
-        oldPrice = crypto.price
+        disposeBag = DisposeBag()
+        
+        crypto.oldPrice
+            .compactMap { $0 }
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] oldPrice in
+                guard let self = self else { return }
+                
+                if crypto.price > oldPrice {
+                    self.priceLabel.textColor = .systemGreen
+                    self.defolteColor(label: self.priceLabel)
+                } else if crypto.price < oldPrice {
+                    self.priceLabel.textColor = .systemRed
+                    self.defolteColor(label: self.priceLabel)
+                } else {
+                    self.priceLabel.textColor = .label
+                }
+            })
+            .disposed(by: disposeBag)
         
         iconImageView.image = UIImage(systemName: "bitcoinsign.circle")
+        
         if let url = crypto.iconURL {
-            DispatchQueue.global(qos: .userInitiated).async {
-                if let data = try? Data(contentsOf: url),
-                   let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self.iconImageView.image = image
-                    }
-                }
+            loadImage(from: url)
+        }
+    }
+
+    private func loadImage(from url: URL) {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else { return }
+            
+            DispatchQueue.main.async {
+                self?.iconImageView.image = image
             }
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
     }
 }

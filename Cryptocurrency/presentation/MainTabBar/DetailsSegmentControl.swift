@@ -1,10 +1,3 @@
-//
-//  DetailsSegmentControl.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 17.09.2025.
-//
-
 import UIKit
 
 protocol DetailsSegmentControlDelegate: AnyObject {
@@ -188,11 +181,11 @@ extension DetailsSegmentControl {
         
         var title: String {
             switch self {
-            case .day: return "Day"
+            case .day:     return "Day"
             case .week:    return "Week"
-            case .month:     return "Мonth"
+            case .month:   return "Мonth"
             case .year:    return "Year"
-            case .all:      return "All"
+            case .all:     return "All"
             }
         }
     }

@@ -1,9 +1,3 @@
-//
-//  MainModuleAssembler.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 07.09.2025.
-//
 
 import Swinject
 
@@ -32,7 +26,7 @@ extension MainModuleAssembler {
     
     private static func initPresentationModules() -> [Assembly] {
         return [
-            CryptocurrencyListModuleAssembly(), FavoritesModuleAssembly(), detailsModuleAssembly(), ServiceAssembly()
+            CryptocurrencyListModuleAssembly(), FavoritesModuleAssembly(), DetailsModuleAssembly(), ServiceAssembly()
         ]
     }
     

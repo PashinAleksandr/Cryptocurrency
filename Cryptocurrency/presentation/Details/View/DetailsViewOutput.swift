@@ -1,6 +1,6 @@
 import Foundation
 
-protocol detailsViewOutput: AnyObject {
+protocol DetailsViewOutput: AnyObject {
     var coin: Coin? { get set }
     
     func viewIsReady()

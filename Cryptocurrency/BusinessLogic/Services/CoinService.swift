@@ -1,7 +1,4 @@
-//
-//  CoinsService.swift
-//  Cryptocurrency
-//
+
 
 import Foundation
 import Alamofire
@@ -38,17 +35,16 @@ final class CoinsService: CoinsServiceProtocol {
                         self.coins.accept(mapped)
                         return
                     }
-                    print("❌ JSON не в ожидаемом формате: \(value)")
+                    print(" JSON не в ожидаемом формате: \(value)")
                     return
                 }
                 
                 // map array
                 let mappedCoins: [Coin] = Mapper<Coin>().mapArray(JSONArray: listArray)
-                print("✅ Получено \(mappedCoins.count) монет")
                 self.coins.accept(mappedCoins)
                 
             case .failure(let error):
-                print("❌ Ошибка загрузки: \(error.localizedDescription)")
+                print(" Ошибка загрузки: \(error.localizedDescription)")
             }
         }
     }

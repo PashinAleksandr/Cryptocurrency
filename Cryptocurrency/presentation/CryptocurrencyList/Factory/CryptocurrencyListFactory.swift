@@ -1,6 +1,3 @@
-//
-//  CryptocurrencyListModuleAssembly.swift
-//
 
 import Foundation
 import Swinject

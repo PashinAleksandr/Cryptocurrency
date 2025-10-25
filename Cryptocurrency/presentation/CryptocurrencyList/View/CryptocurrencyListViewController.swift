@@ -1,14 +1,3 @@
-//
-//  CryptocurrencyListViewController.swift
-//  Cryptocurrency
-//
-//  Created by APashin on 09/09/2025.
-//  Copyright © 2025 bigTopCampany. All rights reserved.
-//
-
-//
-//  CryptocurrencyListViewController.swift
-//
 
 import UIKit
 import SnapKit
@@ -21,10 +10,12 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
     
     private let tableView = UITableView()
     private var coins: [Coin] = []
+    private let refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupRefreshControl()
         output.viewIsReady()
     }
     
@@ -36,6 +27,18 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         self.coins = coins
         DispatchQueue.main.async {
             self.tableView.reloadData()
+        }
+    }
+    
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+    }
+    
+    @objc private func handleRefresh() {
+        output.loadCoins()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.refreshControl.endRefreshing()
         }
     }
     
@@ -52,6 +55,7 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         tableView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        tableView.refreshControl = refreshControl
     }
 }
 
@@ -59,7 +63,7 @@ extension CryptocurrencyListViewController: UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { coins.count }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CoinCell", for: indexPath) as? CryptocurrencyTableViewCell else {
             return UITableViewCell()
         }
@@ -73,6 +77,4 @@ extension CryptocurrencyListViewController: UITableViewDataSource, UITableViewDe
         output.didSelectCoin(coin)
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
-    
 }

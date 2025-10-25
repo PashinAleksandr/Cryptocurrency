@@ -1,10 +1,3 @@
-//
-//  MainTabBarController.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 11.09.2025.
-//
-
 import Foundation
 import UIKit
 import SnapKit

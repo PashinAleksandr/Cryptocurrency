@@ -1,10 +1,3 @@
-//
-//  NetworkMonitor.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 25.09.2025.
-//
-
 import Network
 
 class NetworkMonitor {

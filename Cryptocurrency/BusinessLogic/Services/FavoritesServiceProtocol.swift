@@ -1,10 +1,3 @@
-//
-//  FavoritesServiceProtocol.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 24.09.2025.
-//
-
 
 import Foundation
 import RxSwift
