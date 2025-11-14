@@ -14,4 +14,5 @@ target 'Cryptocurrency' do
   pod 'Charts'
   pod 'Alamofire'
   pod 'Swinject'
+  pod 'RxDataSources'
 end

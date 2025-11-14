@@ -12,7 +12,6 @@ class TabBarController: UITabBarController {
         let favoritesVC = FavoritesFactory().instantiateViewController()
         favoritesVC.tabBarItem = UITabBarItem(title: "Избранное", image: UIImage(systemName: "star"), tag: 1)
         let favouriteNavController = UINavigationController(rootViewController: favoritesVC)
-        
         viewControllers = [homeNavigationController, favouriteNavController]
     }
 }

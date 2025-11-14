@@ -1,16 +1,24 @@
 import Network
+import RxSwift
+import RxRelay
 
-class NetworkMonitor {
+final class NetworkMonitor {
     static let shared = NetworkMonitor()
-    private let monitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: "NetworkMonitor")
     
-    private(set) var isConnected: Bool = false
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "NetworkMonitorQueue")
+    
+    let isConnectedRelay = BehaviorRelay<Bool>(value: false)
     
     private init() {
         monitor.pathUpdateHandler = { [weak self] path in
-            self?.isConnected = path.status == .satisfied
+            let connected = path.status == .satisfied
+            self?.isConnectedRelay.accept(connected)
         }
         monitor.start(queue: queue)
+    }
+    
+    var isConnected: Bool {
+        return isConnectedRelay.value
     }
 }

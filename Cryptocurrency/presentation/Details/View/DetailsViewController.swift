@@ -14,6 +14,7 @@ class DetailsViewController: UIViewController, DetailsViewInput {
     private let segmentControl = DetailsSegmentControl()
     private let parametersStack = UIStackView()
     private let chartView = CandleStickChartView()
+    //TODO: убирать если все ок
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private var currentSection: DetailsSegmentControl.Section = .day
     
@@ -118,8 +119,8 @@ class DetailsViewController: UIViewController, DetailsViewInput {
             ("Change For Day", "\(coin.changeForDay) %"),
             ("Proposal", "\(coin.proposal)"),
             ("Change Price", "\(coin.changePrice)"),
-            ("Hashing Algorithm", coin.hasingAlgorithm),
-            ("Confirmation Algorithm", coin.confirmationAlgorithm)
+            ("Hashing Algorithm", coin.hasingAlgorithm)
+            
         ]
         
         for (title, value) in params {
@@ -167,7 +168,11 @@ class DetailsViewController: UIViewController, DetailsViewInput {
     }
     
     func showLoading(_ isLoading: Bool) {
-        if isLoading { activityIndicator.startAnimating() } else { activityIndicator.stopAnimating() }
+        if isLoading {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
     }
     
     func updateChartData(entries: [Charts.ChartDataEntry], chartStep: Int) {

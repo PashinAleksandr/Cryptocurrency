@@ -26,25 +26,25 @@ extension MainModuleAssembler {
     
     private static func initPresentationModules() -> [Assembly] {
         return [
-            CryptocurrencyListModuleAssembly(), FavoritesModuleAssembly(), DetailsModuleAssembly(), ServiceAssembly()
+            CryptocurrencyListModuleAssembly(), FavoritesModuleAssembly(), DetailsModuleAssembly()
         ]
     }
     
     private static func initServiceModules() -> [Assembly] {
         return [
-            
+            ServiceAssembly()
         ]
     }
     
 }
 
 
-import Swinject
-
 class ServiceAssembly: Assembly {
     func assemble(container: Container) {
         container.register(CoinProviderProtocol.self) { _ in
-            MockCoinProvider()
+//TODO: Низкий приоритет дописать isdebag чтоб он еше и перекоючался между колассакми
+            CoinProvider()
+           // MockCoinProvider()
         }.inObjectScope(.container)
         
         container.register(FavoritesServiceProtocol.self) { r in
@@ -53,5 +53,3 @@ class ServiceAssembly: Assembly {
         }.inObjectScope(.container)
     }
 }
-
-

@@ -20,6 +20,10 @@ final class CryptocurrencyListPresenter: CryptocurrencyListViewOutput, Cryptocur
         router.openDetails(for: coin)
     }
     
+    func showError(error: Error) {
+        view.show(error)
+    }
+    
     func didUpdateCoins(_ coins: [Coin]) {
         view.showCoins(coins)
     }

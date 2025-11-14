@@ -24,13 +24,22 @@ class DetailsInteractor: DetailsInteractorInput {
     func isFavorite(_ coin: Coin) -> Bool {
         favoritesService.isFavorite(coin)
     }
-    
     func observeFavorites() -> Observable<[Coin]> {
         return favoritesService.favorites.asObservable()
     }
     
-    func fetchChartPoints(for range: RangeInterval, instrument: String, completion: @escaping (Result<[ChartPoint], Error>) -> Void) {
-        chartService.fetchChartPoints(for: range, instrument: instrument, market: "kraken", limit: 100, aggregate: 1) { points, error in
+    func fetchChartPoints(for range: RangeInterval, instrument: String, section: DetailsSegmentControl.Section, completion: @escaping (Result<[ChartPoint], Error>) -> Void) {
+        
+        var intervalType: ChartDataService.IntervalType = .all
+        switch section {
+        case .all: intervalType = .all
+        case .day: intervalType = .day
+        case .month: intervalType = .month
+        case .week: intervalType = .week
+        case .year: intervalType = .year
+        }
+        
+        chartService.fetchChartPoints(for: range, instrument: instrument, market: "kraken", aggregate: 1, intervalType: intervalType) { points, error in
             if let error = error {
                 self.output.showError(error: error)
             } else if let points = points {

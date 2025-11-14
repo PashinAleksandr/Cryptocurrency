@@ -8,33 +8,47 @@ final class CryptocurrencyListInteractor: CryptocurrencyListInteractorInput {
     weak var output: CryptocurrencyListInteractorOutput!
     var coinsService: CoinsServiceProtocol!
     
-    private let coinsRelay = BehaviorRelay<[Coin]>(value: [])
     private let disposeBag = DisposeBag()
     
     func subscribeToCoins() {
         coinsService.coins
             .asObservable()
             .subscribe(onNext: { [weak self] newCoins in
-                guard let self = self else { return }
-                self.updateOldPrices(newCoins: newCoins)
-                self.coinsRelay.accept(newCoins)
-                self.output?.didUpdateCoins(newCoins)
+                self?.output?.didUpdateCoins(newCoins)
             })
             .disposed(by: disposeBag)
     }
     
     func loadCoins() {
-        coinsService.fetchCoins()
-    }
-    
-    private func updateOldPrices(newCoins: [Coin]) {
-        let oldCoins = coinsRelay.value
+        //        coinsService.fetchCoins()
+        //            .subscribe(
+        //                onSuccess: { [weak self] coins in
+        //                    self?.output?.didUpdateCoins(coins)
+        //                },
+        //                onFailure: { error in
+        //                    print("Ошибка загрузки: \(error)")
+        //                }
+        //            )
+        //            .disposed(by: disposeBag)
         
-        for newCoin in newCoins {
-            if let oldCoin = oldCoins.first(where: { $0.coinId == newCoin.coinId }) {
-                newCoin.oldPrice.accept(oldCoin.price)
-            } else {
-                newCoin.oldPrice.accept(newCoin.price)
+        
+        coinsService.fetchCoins2 { coins, error in
+            if let coins = coins {
+                self.output.didUpdateCoins(coins)
+            }
+            if let error = error {
+                print(error)
+            }
+        }
+        
+        coinsService.fetchCoins2 { [weak self] coins, error in
+            guard let self = self else { return }
+            if let coins = coins {
+                self.output.didUpdateCoins(coins)
+            }
+            
+            if let error = error {
+                output.showError(error: error)
             }
         }
     }

@@ -11,12 +11,30 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
     private let tableView = UITableView()
     private var coins: [Coin] = []
     private let refreshControl = UIRefreshControl()
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let noInternetView = NoInternetView()
+    private let disposeBag = DisposeBag()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupRefreshControl()
+        setupNetworkMonitor()
         output.viewIsReady()
+        setupActivityIndicator()
+    }
+    private func setupActivityIndicator() {
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        activityIndicator.startAnimating()
     }
     
     func setupInitialState() {
@@ -25,21 +43,33 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
     
     func showCoins(_ coins: [Coin]) {
         self.coins = coins
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
+        self.tableView.reloadData()
+        refreshControl.endRefreshing()
+        activityIndicator.stopAnimating()
+        activityIndicator.removeFromSuperview()
     }
     
     private func setupRefreshControl() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
     }
     
+    
     @objc private func handleRefresh() {
         output.loadCoins()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.refreshControl.endRefreshing()
-        }
+    }
+
+    private func setupNetworkMonitor() {
+        NetworkMonitor.shared.isConnectedRelay
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] isConnected in
+                guard let self = self else { return }
+                self.noInternetView.isHidden = isConnected
+                if isConnected {
+                    self.output.loadCoins()
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     private func setupUI() {
@@ -48,7 +78,7 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(CryptocurrencyTableViewCell.self, forCellReuseIdentifier: "CoinCell")
+        tableView.register(CryptocurrencyTableViewCell.self)
         tableView.tableFooterView = UIView()
         
         view.addSubview(tableView)
@@ -56,17 +86,33 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         tableView.refreshControl = refreshControl
+        
+        
+        view.addSubview(noInternetView)
+        noInternetView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        noInternetView.isHidden = true
+        
+        noInternetView.retryTap
+            .bind { [weak self] in
+                guard let self = self else { return }
+                if NetworkMonitor.shared.isConnected {
+                    self.output.loadCoins()
+                }
+            }
+            .disposed(by: disposeBag)
     }
 }
 
+
 extension CryptocurrencyListViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { coins.count }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        coins.count
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CoinCell", for: indexPath) as? CryptocurrencyTableViewCell else {
-            return UITableViewCell()
-        }
+        let cell = tableView.dequeueReusableCell(CryptocurrencyTableViewCell.self, indexPath: indexPath)
         let coin = coins[indexPath.row]
         cell.configure(with: coin)
         return cell

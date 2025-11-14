@@ -9,9 +9,12 @@ class CryptocurrencyTableViewCell: UITableViewCell {
     private let nameLabel = UILabel()
     private let shortNameLabel = UILabel()
     private let priceLabel = UILabel()
+
     
     private var oldPrice: Double?
     
+    private var resetColorWorkItem: DispatchWorkItem?
+
     var disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -39,6 +42,7 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         
         priceLabel.font = .systemFont(ofSize: 16, weight: .semibold)
     }
+    
     
     func setupLayout() {
         contentView.addSubview(iconImageView)
@@ -71,12 +75,19 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         }
     }
     
-    func defolteColor (label: UILabel) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            UIView.transition(with: label, duration: 0.5, options: .transitionCrossDissolve, animations: {
-                label.textColor = .black
-            })
+    func setPriceColor(_ color: UIColor) {
+        priceLabel.textColor = color
+        resetColorWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            UIView.transition(with: self.priceLabel,
+                              duration: 0.3,
+                              options: .transitionCrossDissolve) {
+                self.priceLabel.textColor = .black
+            }
         }
+        resetColorWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
     }
     
     func configure(with crypto: Coin) {
@@ -85,21 +96,17 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         priceLabel.text = String(format: "$%.2f", crypto.price)
         
         disposeBag = DisposeBag()
-        
-        crypto.oldPrice
-            .compactMap { $0 }
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] oldPrice in
-                guard let self = self else { return }
                 
-                if crypto.price > oldPrice {
-                    self.priceLabel.textColor = .systemGreen
-                    self.defolteColor(label: self.priceLabel)
-                } else if crypto.price < oldPrice {
-                    self.priceLabel.textColor = .systemRed
-                    self.defolteColor(label: self.priceLabel)
-                } else {
-                    self.priceLabel.textColor = .label
+        crypto.priceRelay
+            .subscribe(onNext: { [weak self] newPrice in
+                guard let self = self,
+                      let oldPrice = crypto.oldPrice else { return }
+                
+                self.priceLabel.text = String(format: "$%.2f", newPrice)
+                if newPrice > oldPrice {
+                    self.setPriceColor(.systemGreen)
+                } else if newPrice < oldPrice {
+                    self.setPriceColor(.systemRed)
                 }
             })
             .disposed(by: disposeBag)
@@ -125,5 +132,9 @@ class CryptocurrencyTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         disposeBag = DisposeBag()
+        resetColorWorkItem?.cancel()
+        resetColorWorkItem = nil
+        priceLabel.layer.removeAllAnimations()
+        priceLabel.textColor = .black
     }
 }

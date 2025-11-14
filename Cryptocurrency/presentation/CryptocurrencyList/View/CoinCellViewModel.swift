@@ -12,7 +12,7 @@ class CoinCellViewModel {
     
     let fullName: Driver<String>
     let shortName: Driver<String>
-    let price: Driver<String>
+    private let price: Driver<String>
     let capitalization: Driver<String>
     let dailyChange: Driver<String>
     let iconURL: Driver<URL?>

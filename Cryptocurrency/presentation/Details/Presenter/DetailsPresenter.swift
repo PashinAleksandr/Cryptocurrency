@@ -63,11 +63,9 @@ class DetailsPresenter: NSObject, DetailsModuleInput, DetailsViewOutput {
         }
         
         view.showLoading(true)
-        interactor.fetchChartPoints(for: range, instrument: (coin?.shortCoinName ?? "BTC-USD")+"-USD" ) { [weak self] result in
-            DispatchQueue.main.async {
+        if let coin = coin {
+            interactor.fetchChartPoints(for: range, instrument: (coin.shortCoinName)+"-USD", section: section ) { [weak self] result in
                 guard let self = self else { return }
-                self.view.showLoading(false)
-                
                 switch result {
                 case .success(let points):
                     
@@ -86,8 +84,13 @@ class DetailsPresenter: NSObject, DetailsModuleInput, DetailsViewOutput {
                 case .failure(let error):
                     self.view.show(error)
                 }
+                
             }
+            
+        } else {
+            showError(error: "Error" as! Error)
         }
+        self.view.showLoading(false)
     }
 }
 

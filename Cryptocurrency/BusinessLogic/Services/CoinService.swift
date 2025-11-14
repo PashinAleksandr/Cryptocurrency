@@ -8,43 +8,92 @@ import ObjectMapper
 
 protocol CoinsServiceProtocol {
     var coins: BehaviorRelay<[Coin]> { get }
-    func fetchCoins()
+    func fetchCoins() -> Single<[Coin]>
+    func fetchCoins2(complitionHandler: @escaping ([Coin]?, Error?) -> Void)
 }
 
 final class CoinsService: CoinsServiceProtocol {
+    
     let coins = BehaviorRelay<[Coin]>(value: [])
-    
-    // Use the exact URL you provided (api key included)
-    private let url = "https://data-api.coindesk.com/asset/v1/top/list?page=1&page_size=100&sort_by=CIRCULATING_MKT_CAP_USD&sort_direction=DESC&groups=ID,BASIC,SUPPLY,PRICE,MKT_CAP,VOLUME,CHANGE,TOPLIST_RANK&toplist_quote_asset=USD&api_key=57282f6c0fa771e4548f532a44dfe99c8ad10bc34e197090a457711a79fc5d3b"
-    
-    func fetchCoins() {
-        AF.request(url).responseJSON { [weak self] response in
-            guard let self = self else { return }
+   
+    func fetchCoins() -> Single<[Coin]> {
+        return Single.create { [weak self] single in
+            guard let self = self else {
+                single(.failure(NSError(domain: "CoinsService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Self is nil"])))
+                return Disposables.create()
+            }
             
+            let request = AF.request(Config.ChartAPI.coinUrl).responseJSON { response in
+                switch response.result {
+                case .success(let value):
+                    guard
+                        let json = value as? [String: Any],
+                        let dataDict = json["Data"] as? [String: Any],
+                        let listArray = dataDict["LIST"] as? [[String: Any]]
+                    else {
+                        single(.failure(NSError(domain: "CoinsService", code: -2, userInfo: [NSLocalizedDescriptionKey: "Invalid JSON structure"])))
+                        return
+                    }
+                    
+                    let newCoinsRaw: [Coin] = Mapper<Coin>().mapArray(JSONArray: listArray)
+                    let oldCoins = self.coins.value
+                    
+                    let updatedCoins: [Coin] = newCoinsRaw.map { newCoin in
+                        if let existing = oldCoins.first(where: { $0.coinId == newCoin.coinId }) {
+                            existing.price = newCoin.price
+                            existing.capitalization = newCoin.capitalization
+                            existing.changeForDay = newCoin.changeForDay
+                            existing.iconURL = newCoin.iconURL
+                            return existing
+                        } else {
+                            return newCoin
+                        }
+                    }
+                    
+                    self.coins.accept(updatedCoins)
+                    single(.success(updatedCoins))
+                    
+                case .failure(let error):
+                    single(.failure(error))
+                }
+            }
+            
+            return Disposables.create { request.cancel() }
+        }
+    }
+
+    func fetchCoins2(complitionHandler: @escaping ([Coin]?, Error?) -> Void) {
+        let _ = AF.request(Config.ChartAPI.coinUrl).responseJSON { response in
             switch response.result {
             case .success(let value):
-                // The real response in your sample: top -> Data -> LIST -> [ { ... }, ... ]
                 guard
                     let json = value as? [String: Any],
                     let dataDict = json["Data"] as? [String: Any],
                     let listArray = dataDict["LIST"] as? [[String: Any]]
                 else {
-                    // Some endpoints may return "Data" as an array directly; try fallback:
-                    if let dataArr = (value as? [String: Any])?["Data"] as? [[String: Any]] {
-                        let mapped = Mapper<Coin>().mapArray(JSONArray: dataArr)
-                        self.coins.accept(mapped)
-                        return
-                    }
-                    print(" JSON не в ожидаемом формате: \(value)")
+                    complitionHandler(nil, NSError(domain: "CoinsService", code: -2, userInfo: [NSLocalizedDescriptionKey: "Invalid JSON structure"]))
                     return
                 }
                 
-                // map array
-                let mappedCoins: [Coin] = Mapper<Coin>().mapArray(JSONArray: listArray)
-                self.coins.accept(mappedCoins)
+                let newCoinsRaw: [Coin] = Mapper<Coin>().mapArray(JSONArray: listArray)
+                let oldCoins = self.coins.value
                 
+                let updatedCoins: [Coin] = newCoinsRaw.map { newCoin in
+                    if let existing = oldCoins.first(where: { $0.coinId == newCoin.coinId }) {
+                        existing.price = newCoin.price + Double(Int.random(in: -100...100))
+                        existing.capitalization = newCoin.capitalization
+                        existing.changeForDay = newCoin.changeForDay
+                        existing.iconURL = newCoin.iconURL
+                        return existing
+                    } else {
+                        return newCoin
+                    }
+                }
+                
+                self.coins.accept(updatedCoins)
+                complitionHandler(updatedCoins, nil)
             case .failure(let error):
-                print(" Ошибка загрузки: \(error.localizedDescription)")
+                complitionHandler(nil, error)
             }
         }
     }

@@ -4,6 +4,7 @@ import ObjectMapper
 import RxSwift
 import RxRelay
 
+
 final class Coin: Mappable {
     
     var coinId: Int = 0
@@ -12,68 +13,71 @@ final class Coin: Mappable {
     var proposal: Double = 0
     var changePrice: Double = 0
     var confirmationAlgorithm: String = ""
-    var price: Double = 0
     var hasingAlgorithm: String = ""
     var fullCoinName: String = ""
     var shortCoinName: String = ""
     var iconURL: URL?
-    var oldPrice = BehaviorRelay<Double?>(value: nil)
+    var oldPrice: Double? 
+    var priceRelay = BehaviorRelay<Double>(value: 0) //TODO: сделатьтак чтоб эту переменную нельзя было менять из вне или совсем убрать
+    var price: Double {
+        get { priceRelay.value }
+        set {
+            oldPrice = price
+            priceRelay.accept(newValue)
+        }
+    }
     
     init() {}
     
     required init?(map: Map) { }
     
     init(capitalization: String = "",
-            changeForDay: Double = 0,
-            proposal: Double = 0,
-            changePrice: Double = 0,
-            confirmationAlgorithm: String = "",
-            price: Double = 0,
-            hasingAlgorithm: String = "",
-            fullCoinName: String = "",
-            shortCoinName: String = "",
-            iconURL: URL? = nil,
-            coinId: Int = 0) {
-           self.capitalization = capitalization
-           self.changeForDay = changeForDay
-           self.proposal = proposal
-           self.changePrice = changePrice
-           self.confirmationAlgorithm = confirmationAlgorithm
-           self.price = price
-           self.hasingAlgorithm = hasingAlgorithm
-           self.fullCoinName = fullCoinName
-           self.shortCoinName = shortCoinName
-           self.iconURL = iconURL
-           self.coinId = coinId
-           self.oldPrice.accept(price)
-       }
-    
+         changeForDay: Double = 0,
+         proposal: Double = 0,
+         changePrice: Double = 0,
+         confirmationAlgorithm: String = "",
+         price: Double = 0,
+         hasingAlgorithm: String = "",
+         fullCoinName: String = "",
+         shortCoinName: String = "",
+         iconURL: URL? = nil,
+         coinId: Int = 0) {
+        self.capitalization = capitalization
+        self.changeForDay = changeForDay
+        self.proposal = proposal
+        self.changePrice = changePrice
+        self.confirmationAlgorithm = confirmationAlgorithm
+        self.price = price
+        self.hasingAlgorithm = hasingAlgorithm
+        self.fullCoinName = fullCoinName
+        self.shortCoinName = shortCoinName
+        self.iconURL = iconURL
+        self.coinId = coinId
+        
+    }
+    //TODO: Убрать лишнее 
     func mapping(map: Map) {
         let stringToInt = TransformOf<Int, Any>(fromJSON: { value in
             if let v = value as? Int { return v }
-            if let s = value as? String, let i = Int(s) { return i }
             return nil
         }, toJSON: { $0 })
         
         let stringToDouble = TransformOf<Double, Any>(fromJSON: { value in
             if let v = value as? Double { return v }
-            if let v = value as? Int { return Double(v) }
-            if let s = value as? String, let d = Double(s) { return d }
             return nil
         }, toJSON: { $0 })
         
         coinId <- (map["ID"], stringToInt)
-        if coinId == 0 { coinId <- (map["id"], stringToInt) }
+//        if coinId == 0 { coinId <- (map["id"], stringToInt) }
         
         fullCoinName <- map["NAME"]
-        if fullCoinName.isEmpty { fullCoinName <- map["name"] }
+//        if fullCoinName.isEmpty { fullCoinName <- map["name"] }
         
         shortCoinName <- map["SYMBOL"]
-        if shortCoinName.isEmpty { shortCoinName <- map["symbol"] }
+//        if shortCoinName.isEmpty { shortCoinName <- map["symbol"] }
         
         price <- (map["PRICE_USD"], stringToDouble)
-        if price == 0 { price <- (map["priceUsd"], stringToDouble) }
-        oldPrice.accept(price)
+//        if price == 0 { price <- (map["priceUsd"], stringToDouble) }
         
         var cap: Double = 0
         cap <- (map["TOTAL_MKT_CAP_USD"], stringToDouble)

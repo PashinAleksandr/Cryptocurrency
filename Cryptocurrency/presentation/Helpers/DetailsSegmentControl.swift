@@ -1,9 +1,5 @@
 import UIKit
 
-protocol DetailsSegmentControlDelegate: AnyObject {
-    func segmentControlDidTabted(didSelect: DetailsSegmentControl.Section)
-}
-
 class DetailsSegmentControl: UIStackView {
     
     weak var delegate: DetailsSegmentControlDelegate?

@@ -12,11 +12,14 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
     private let tableView = UITableView()
     private var favorites: [Coin] = []
     private let disposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let noInternetView = NoInternetView()
     
     private lazy var emptyStateView = ActionView(
         viewModel: ActionView.ViewModel(
             title: "В избранном пусто",
-            buttonName: "Перейти к списку",
+            buttonName: "Перейти к списку Криптовалют",
             didTapped: { [weak self] in
                 self?.output?.didselectCoinListVC()
             }
@@ -32,6 +35,42 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
         setupEmptyState()
         
         output?.viewIsReady()
+        setupRefreshControl()
+        setupNetworkMonitor()
+        setupActivityIndicator()
+    }
+    
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+    }
+    
+    
+    @objc private func handleRefresh() {
+        tableView.reloadData()
+    }
+    
+    private func setupNetworkMonitor() {
+        NetworkMonitor.shared.isConnectedRelay
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] isConnected in
+                guard let self = self else { return }
+                self.noInternetView.isHidden = isConnected
+                if isConnected {
+                    tableView.reloadData()
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func setupActivityIndicator() {
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        activityIndicator.startAnimating()
     }
     
     private func setupTableView() {
@@ -95,10 +134,18 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
         }
         return UISwipeActionsConfiguration(actions: [delete])
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
         updateEmptyState()
+        let favoritesService = MainModuleAssembler.resolver.resolve(FavoritesServiceProtocol.self)!
+        
+        favoritesService.favorites
+            .subscribe(onNext: { [weak self] favorites in
+                guard let self = self else { return }
+                self.favorites = favorites
+            })
+            .disposed(by: disposeBag)
     }
 }
