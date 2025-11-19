@@ -12,7 +12,7 @@ protocol TransitionHandlerProtocol: AnyObject {
     
     func closeModule(_ animated: Bool)
     func show(_ module: TransitionHandlerProtocol)
-    func present(_ module: TransitionHandlerProtocol, animated: Bool)
+    func present(module: TransitionHandlerProtocol, animated: Bool)
     func popTo(_ module: TransitionHandlerProtocol, animated: Bool)
     func popTo<T>(_ module: T.Type, animated: Bool)
     func popToRoot(animated: Bool)
@@ -27,7 +27,7 @@ extension TransitionHandlerProtocol {
 extension UIViewController: TransitionHandlerProtocol {
     func presentModule(usingFactory factory: PresentationModuleFactory) {
         let moduleTransitionHandler = factory.instantiateTransitionHandler()
-        present(moduleTransitionHandler, animated: true)
+        present(module: moduleTransitionHandler, animated: true)
     }
     
     func showModule(usingFactory factory: PresentationModuleFactory) {
@@ -53,7 +53,7 @@ extension UIViewController: TransitionHandlerProtocol {
         self.show(vc, sender: nil)
     }
     
-    func present(_ module: TransitionHandlerProtocol, animated: Bool) {
+    func present(module: TransitionHandlerProtocol, animated: Bool) {
         guard let vc = module.asViewController else { return }
         self.present(vc, animated: animated)
     }

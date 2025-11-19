@@ -14,7 +14,6 @@ class DetailsViewController: UIViewController, DetailsViewInput {
     private let segmentControl = DetailsSegmentControl()
     private let parametersStack = UIStackView()
     private let chartView = CandleStickChartView()
-    //TODO: убирать если все ок
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private var currentSection: DetailsSegmentControl.Section = .day
     
@@ -24,6 +23,8 @@ class DetailsViewController: UIViewController, DetailsViewInput {
         super.viewDidLoad()
         output?.viewIsReady()
         segmentControl.delegate = self
+        activityIndicator.stopAnimating()
+        activityIndicator.isHidden = false
     }
     
     func setupInitialState() {

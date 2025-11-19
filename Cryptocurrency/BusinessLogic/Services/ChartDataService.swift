@@ -14,10 +14,10 @@ final class ChartDataService: ChartDataServiceProtocol {
         
         var limit: Int {
             switch self {
-            case .day: 300
-            case .month: 120
-            case .week: 340
-            case .year: 800
+            case .day: 1440
+            case .month: 720
+            case .week: 168
+            case .year: 365
             case .all: 4000
             }
         }
@@ -25,7 +25,7 @@ final class ChartDataService: ChartDataServiceProtocol {
         var url: String {
             switch self {
             case .day: ChartDataService.minutesURL
-            case .month: ChartDataService.daysURL
+            case .month: ChartDataService.hoursURL
             case .week: ChartDataService.hoursURL
             case .year: ChartDataService.daysURL
             case .all: ChartDataService.daysURL

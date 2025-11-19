@@ -9,12 +9,12 @@ class CryptocurrencyTableViewCell: UITableViewCell {
     private let nameLabel = UILabel()
     private let shortNameLabel = UILabel()
     private let priceLabel = UILabel()
-
+    
     
     private var oldPrice: Double?
     
     private var resetColorWorkItem: DispatchWorkItem?
-
+    
     var disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -74,50 +74,70 @@ class CryptocurrencyTableViewCell: UITableViewCell {
             make.width.greaterThanOrEqualTo(80)
         }
     }
-    
+
     func setPriceColor(_ color: UIColor) {
-        priceLabel.textColor = color
-        resetColorWorkItem?.cancel()
-        let workItem = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
-            UIView.transition(with: self.priceLabel,
-                              duration: 0.3,
-                              options: .transitionCrossDissolve) {
+//        priceLabel.textColor = color
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            // TODO: убивать анимацию при переиспользовании, перезаполнении или обновлении
+            UIView.transition(with: self.priceLabel, duration: 3, options: .transitionCrossDissolve) {
                 self.priceLabel.textColor = .black
             }
         }
-        resetColorWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
     }
     
-    func configure(with crypto: Coin) {
-        nameLabel.text = crypto.fullCoinName
-        shortNameLabel.text = crypto.shortCoinName
-        priceLabel.text = String(format: "$%.2f", crypto.price)
+    private func resetAnimations() {
+        layer.removeAllAnimations()
+        contentView.layer.removeAllAnimations()
+        priceLabel.layer.removeAllAnimations()
+        nameLabel.layer.removeAllAnimations()
+        shortNameLabel.layer.removeAllAnimations()
+        iconImageView.layer.removeAllAnimations()
+        
+        resetColorWorkItem?.cancel()
+        resetColorWorkItem = nil
+        
+        priceLabel.textColor = .black
+    }
+    //TODO: написать dowans понять анимация брахлит из за того что дважды функция вызывается?
+    func configure(with coin: Coin) {
+        nameLabel.text = coin.fullCoinName
+        shortNameLabel.text = coin.shortCoinName
+        priceLabel.text = String(format: "$%.2f", coin.priceRelay.value)
         
         disposeBag = DisposeBag()
-                
-        crypto.priceRelay
+        
+        priceLabel.textColor = .systemGreen
+        if 1 > 0 {
+            
+            self.setPriceColor(.systemGreen)
+        } else if 1 < 1 {
+            self.setPriceColor(.systemRed)
+        }
+        
+        coin.priceRelay
             .subscribe(onNext: { [weak self] newPrice in
                 guard let self = self,
-                      let oldPrice = crypto.oldPrice else { return }
-                
+                      let oldPrice = coin.oldPrice else { return }
+                print("old:", oldPrice, "new:", newPrice)
+
                 self.priceLabel.text = String(format: "$%.2f", newPrice)
-                if newPrice > oldPrice {
-                    self.setPriceColor(.systemGreen)
-                } else if newPrice < oldPrice {
-                    self.setPriceColor(.systemRed)
-                }
+//                priceLabel.textColor = newPrice > oldPrice ? .systemGreen : .systemRed
+//                if newPrice > oldPrice {
+//                    
+//                    self.setPriceColor(.systemGreen)
+//                } else if newPrice < oldPrice {
+//                    self.setPriceColor(.systemRed)
+//                }
             })
             .disposed(by: disposeBag)
-        
+        //TODO: скачут иконки проверить в чем дело.
         iconImageView.image = UIImage(systemName: "bitcoinsign.circle")
         
-        if let url = crypto.iconURL {
+        if let url = coin.iconURL {
             loadImage(from: url)
         }
     }
-
+    
     private func loadImage(from url: URL) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let data = try? Data(contentsOf: url),
@@ -131,10 +151,9 @@ class CryptocurrencyTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        disposeBag = DisposeBag()
-        resetColorWorkItem?.cancel()
-        resetColorWorkItem = nil
-        priceLabel.layer.removeAllAnimations()
-        priceLabel.textColor = .black
+//        disposeBag = DisposeBag()
+//        resetAnimations()
+//        priceLabel.layer.removeAllAnimations()
+//        priceLabel.textColor = .black
     }
 }

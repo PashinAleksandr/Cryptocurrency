@@ -41,12 +41,16 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         tableView.reloadData()
     }
     
+    func stopActivityIndicator() {
+        activityIndicator.stopAnimating()
+        activityIndicator.removeFromSuperview()
+    }
+    
     func showCoins(_ coins: [Coin]) {
         self.coins = coins
         self.tableView.reloadData()
         refreshControl.endRefreshing()
-        activityIndicator.stopAnimating()
-        activityIndicator.removeFromSuperview()
+        stopActivityIndicator()
     }
     
     private func setupRefreshControl() {
@@ -66,6 +70,7 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
                 guard let self = self else { return }
                 self.noInternetView.isHidden = isConnected
                 if isConnected {
+                    // TODO: ошибка повторно вызываем запрос у ссерверва (первый раз в viewdidload)
                     self.output.loadCoins()
                 }
             })

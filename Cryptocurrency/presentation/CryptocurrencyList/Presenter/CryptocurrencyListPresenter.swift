@@ -18,6 +18,7 @@ final class CryptocurrencyListPresenter: CryptocurrencyListViewOutput, Cryptocur
     
     func didSelectCoin(_ coin: Coin) {
         router.openDetails(for: coin)
+      //  view.stopActivityIndicator()
     }
     
     func showError(error: Error) {

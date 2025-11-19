@@ -40,7 +40,7 @@ final class CoinsService: CoinsServiceProtocol {
                     
                     let updatedCoins: [Coin] = newCoinsRaw.map { newCoin in
                         if let existing = oldCoins.first(where: { $0.coinId == newCoin.coinId }) {
-                            existing.price = newCoin.price
+                            existing.priceRelay.accept(newCoin.priceRelay.value)
                             existing.capitalization = newCoin.capitalization
                             existing.changeForDay = newCoin.changeForDay
                             existing.iconURL = newCoin.iconURL
@@ -80,7 +80,8 @@ final class CoinsService: CoinsServiceProtocol {
                 
                 let updatedCoins: [Coin] = newCoinsRaw.map { newCoin in
                     if let existing = oldCoins.first(where: { $0.coinId == newCoin.coinId }) {
-                        existing.price = newCoin.price + Double(Int.random(in: -100...100))
+                        existing.oldPrice = existing.priceRelay.value
+                        existing.priceRelay.accept(newCoin.priceRelay.value + Double(Int.random(in: 10...20)))
                         existing.capitalization = newCoin.capitalization
                         existing.changeForDay = newCoin.changeForDay
                         existing.iconURL = newCoin.iconURL

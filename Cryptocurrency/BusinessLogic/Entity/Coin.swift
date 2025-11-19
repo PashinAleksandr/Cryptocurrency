@@ -7,6 +7,7 @@ import RxRelay
 
 final class Coin: Mappable {
     
+    var dispostBag: DisposeBag = DisposeBag()
     var coinId: Int = 0
     var capitalization: String = ""
     var changeForDay: Double = 0
@@ -17,17 +18,12 @@ final class Coin: Mappable {
     var fullCoinName: String = ""
     var shortCoinName: String = ""
     var iconURL: URL?
-    var oldPrice: Double? 
-    var priceRelay = BehaviorRelay<Double>(value: 0) //TODO: сделатьтак чтоб эту переменную нельзя было менять из вне или совсем убрать
-    var price: Double {
-        get { priceRelay.value }
-        set {
-            oldPrice = price
-            priceRelay.accept(newValue)
-        }
-    }
+    var oldPrice: Double?
+    var priceRelay = BehaviorRelay<Double>(value: 0) 
+    var price: Double = 0
     
-    init() {}
+    init() {
+    }
     
     required init?(map: Map) { }
     
@@ -54,8 +50,17 @@ final class Coin: Mappable {
         self.iconURL = iconURL
         self.coinId = coinId
         
+        priceRelay.subscribe { [weak self] sam in
+            self?.oldPrice = sam
+            
+        }.disposed(by: dispostBag)
     }
-    //TODO: Убрать лишнее 
+    
+//    func updatePrice(newPrice: Double) {
+//        oldPrice = priceRelay.value
+//        priceRelay.accept(newPrice)
+//    }
+   
     func mapping(map: Map) {
         let stringToInt = TransformOf<Int, Any>(fromJSON: { value in
             if let v = value as? Int { return v }
@@ -68,29 +73,23 @@ final class Coin: Mappable {
         }, toJSON: { $0 })
         
         coinId <- (map["ID"], stringToInt)
-//        if coinId == 0 { coinId <- (map["id"], stringToInt) }
         
         fullCoinName <- map["NAME"]
-//        if fullCoinName.isEmpty { fullCoinName <- map["name"] }
         
         shortCoinName <- map["SYMBOL"]
-//        if shortCoinName.isEmpty { shortCoinName <- map["symbol"] }
         
         price <- (map["PRICE_USD"], stringToDouble)
-//        if price == 0 { price <- (map["priceUsd"], stringToDouble) }
+        priceRelay.accept(price)
+//        updatePrice(newPrice: price)
+       // oldPrice <- (map["PRICE_USD"], stringToDouble)
         
         var cap: Double = 0
         cap <- (map["TOTAL_MKT_CAP_USD"], stringToDouble)
-        if cap == 0 { cap <- (map["CIRCULATING_MKT_CAP_USD"], stringToDouble) }
         capitalization = "\(cap)"
         
         changeForDay <- (map["SPOT_MOVING_24_HOUR_CHANGE_PERCENTAGE_USD"], stringToDouble)
-        if changeForDay == 0 {
-            changeForDay <- (map["SPOT_MOVING_7_DAY_CHANGE_PERCENTAGE_USD"], stringToDouble)
-        }
         
         proposal <- (map["SUPPLY_FUTURE"], stringToDouble)
-        if proposal <= 0 { proposal <- (map["SUPPLY_TOTAL"], stringToDouble) }
         
         changePrice <- (map["PRICE_CONVERSION_VALUE"], stringToDouble)
         
@@ -98,7 +97,12 @@ final class Coin: Mappable {
         hasingAlgorithm <- map["ASSET_TYPE"]
         
         iconURL <- (map["LOGO_URL"], URLTransform())
-        if iconURL == nil { iconURL <- (map["logo_url"], URLTransform()) }
+        
+       
+//        priceRelay.subscribe { [weak self] value in
+//            self?.price = value
+//            self?.oldPrice = value
+//        }.disposed(by: dispostBag)
     }
 }
 

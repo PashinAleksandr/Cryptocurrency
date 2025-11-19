@@ -22,7 +22,7 @@ class CoinCellViewModel {
         
         fullName = .just(coin.fullCoinName)
         shortName = .just(coin.shortCoinName)
-        price = .just(String(format: "$%.2f", coin.price))
+        price = .just(String(format: "$%.2f", coin.priceRelay.value))
         capitalization = .just(coin.capitalization)
         dailyChange = .just(String(format: "%.2f%%", coin.changeForDay))
         iconURL = .just(coin.iconURL)

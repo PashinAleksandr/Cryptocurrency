@@ -38,6 +38,7 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
         setupRefreshControl()
         setupNetworkMonitor()
         setupActivityIndicator()
+        activityIndicator.stopAnimating()
     }
     
     private func setupRefreshControl() {
