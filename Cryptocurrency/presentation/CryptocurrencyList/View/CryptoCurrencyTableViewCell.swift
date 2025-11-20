@@ -10,7 +10,6 @@ class CryptocurrencyTableViewCell: UITableViewCell {
     private let shortNameLabel = UILabel()
     private let priceLabel = UILabel()
     
-    
     private var oldPrice: Double?
     
     private var resetColorWorkItem: DispatchWorkItem?
@@ -74,11 +73,10 @@ class CryptocurrencyTableViewCell: UITableViewCell {
             make.width.greaterThanOrEqualTo(80)
         }
     }
-
+    
     func setPriceColor(_ color: UIColor) {
-//        priceLabel.textColor = color
+        //        priceLabel.textColor = color
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            // TODO: убивать анимацию при переиспользовании, перезаполнении или обновлении
             UIView.transition(with: self.priceLabel, duration: 3, options: .transitionCrossDissolve) {
                 self.priceLabel.textColor = .black
             }
@@ -92,45 +90,47 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         nameLabel.layer.removeAllAnimations()
         shortNameLabel.layer.removeAllAnimations()
         iconImageView.layer.removeAllAnimations()
-        
         resetColorWorkItem?.cancel()
         resetColorWorkItem = nil
-        
         priceLabel.textColor = .black
     }
+    
     //TODO: написать dowans понять анимация брахлит из за того что дважды функция вызывается?
     func configure(with coin: Coin) {
         nameLabel.text = coin.fullCoinName
         shortNameLabel.text = coin.shortCoinName
         priceLabel.text = String(format: "$%.2f", coin.priceRelay.value)
+//        self.priceLabel.textColor = .black
         
         disposeBag = DisposeBag()
         
-        priceLabel.textColor = .systemGreen
-        if 1 > 0 {
-            
-            self.setPriceColor(.systemGreen)
-        } else if 1 < 1 {
-            self.setPriceColor(.systemRed)
-        }
-        
+//        priceLabel.textColor = .systemGreen
+//        if 1 > 0 {
+//            
+//            self.setPriceColor(.systemGreen)
+//        } else if 1 < 1 {
+//            self.setPriceColor(.systemRed)
+//        }
+        //TODO: вынести во вью модель все проверки а тут только отображать
         coin.priceRelay
+            .skip(1)
             .subscribe(onNext: { [weak self] newPrice in
                 guard let self = self,
-                      let oldPrice = coin.oldPrice else { return }
+                      let oldPrice = coin.oldPrice
+                else { return }
                 print("old:", oldPrice, "new:", newPrice)
-
+                
                 self.priceLabel.text = String(format: "$%.2f", newPrice)
-//                priceLabel.textColor = newPrice > oldPrice ? .systemGreen : .systemRed
-//                if newPrice > oldPrice {
-//                    
-//                    self.setPriceColor(.systemGreen)
-//                } else if newPrice < oldPrice {
-//                    self.setPriceColor(.systemRed)
-//                }
+                priceLabel.textColor = newPrice > oldPrice ? .systemGreen : .systemRed
+                if newPrice > oldPrice {
+                    
+                    self.setPriceColor(.systemGreen)
+                } else if newPrice < oldPrice {
+                    self.setPriceColor(.systemRed)
+                }
             })
             .disposed(by: disposeBag)
-        //TODO: скачут иконки проверить в чем дело.
+        
         iconImageView.image = UIImage(systemName: "bitcoinsign.circle")
         
         if let url = coin.iconURL {
@@ -153,7 +153,5 @@ class CryptocurrencyTableViewCell: UITableViewCell {
         super.prepareForReuse()
 //        disposeBag = DisposeBag()
 //        resetAnimations()
-//        priceLabel.layer.removeAllAnimations()
-//        priceLabel.textColor = .black
     }
 }

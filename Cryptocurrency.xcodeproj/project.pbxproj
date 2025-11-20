@@ -41,6 +41,7 @@
 		D4432FC72E6DF5DD007CF2A0 /* MainModuleAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FC62E6DF5DD007CF2A0 /* MainModuleAssembler.swift */; };
 		D4432FCC2E6DF6D4007CF2A0 /* UIViewInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */; };
 		D4432FCE2E6DF8C0007CF2A0 /* TransitionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */; };
+		D463BD912ECE22D60045B57D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D463BD902ECE22D60045B57D /* AppState.swift */; };
 		D4A5AC5B2E8ADE2E00C32DDB /* CoinService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A5AC5A2E8ADE2E00C32DDB /* CoinService.swift */; };
 		D4AEFAD42E7324E5004248E7 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AEFAD32E7324E5004248E7 /* TabBarController.swift */; };
 		D4B343E32E79BBA3006FC3EB /* Coin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B343E22E79BBA3006FC3EB /* Coin.swift */; };
@@ -114,6 +115,7 @@
 		D4432FC62E6DF5DD007CF2A0 /* MainModuleAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModuleAssembler.swift; sourceTree = "<group>"; };
 		D4432FCB2E6DF6D4007CF2A0 /* UIViewInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewInput.swift; sourceTree = "<group>"; };
 		D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionHandler.swift; sourceTree = "<group>"; };
+		D463BD902ECE22D60045B57D /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		D4A5AC5A2E8ADE2E00C32DDB /* CoinService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinService.swift; sourceTree = "<group>"; };
 		D4AEFAD32E7324E5004248E7 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D4B343E22E79BBA3006FC3EB /* Coin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coin.swift; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 				D4BB88102E6A01F80000CAF0 /* AppDelegate.swift */,
 				D4BB88122E6A01F80000CAF0 /* SceneDelegate.swift */,
 				D4432FCD2E6DF8C0007CF2A0 /* TransitionHandler.swift */,
+				D463BD902ECE22D60045B57D /* AppState.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -647,6 +650,7 @@
 				1AA4C57735996A267A480620 /* FavoritesRouter.swift in Sources */,
 				19EA7AD0AD1DDDE899186056 /* FavoritesinteractorInput.swift in Sources */,
 				71E9BD538FEB9A7AE2E09D2D /* FavoritesinteractorOutput.swift in Sources */,
+				D463BD912ECE22D60045B57D /* AppState.swift in Sources */,
 				7CF8290B02095BEFDE8EE045 /* Favoritesinteractor.swift in Sources */,
 				D4B343FE2E85B52C006FC3EB /* UITableView+dequeue.swift in Sources */,
 				A735AA18F9A5E343D6E3BFB8 /* DetailsFactory.swift in Sources */,

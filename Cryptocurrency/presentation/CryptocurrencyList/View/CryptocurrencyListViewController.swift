@@ -46,9 +46,15 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         activityIndicator.removeFromSuperview()
     }
     
+    private var doOnce: Bool = false
+    
     func showCoins(_ coins: [Coin]) {
+        //TODO: обновлять массив viewModels перезаполнять.
         self.coins = coins
-        self.tableView.reloadData()
+        if !doOnce {
+            self.tableView.reloadData()
+            doOnce = true
+        }
         refreshControl.endRefreshing()
         stopActivityIndicator()
     }
@@ -56,7 +62,6 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
     private func setupRefreshControl() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
     }
-    
     
     @objc private func handleRefresh() {
         output.loadCoins()
@@ -115,7 +120,7 @@ extension CryptocurrencyListViewController: UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         coins.count
     }
-    
+    //TODO: Заполнять массивом viewModels
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(CryptocurrencyTableViewCell.self, indexPath: indexPath)
         let coin = coins[indexPath.row]

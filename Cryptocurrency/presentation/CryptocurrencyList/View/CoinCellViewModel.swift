@@ -28,3 +28,4 @@ class CoinCellViewModel {
         iconURL = .just(coin.iconURL)
     }
 }
+//TODO: принимать данные, забиндить лейблы и цвета с ячейков (разобраться как это сделать) 
