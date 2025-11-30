@@ -37,10 +37,6 @@ class DetailsViewController: UIViewController, DetailsViewInput {
         }
         
         segmentControl.configure(with: DetailsSegmentControl.Section.allCases, defaultIndex: 0)
-        segmentControl.didSelect = { [weak self] section in
-            self?.output?.loadChart(for: section)
-        }
-        
         output?.loadChart(for: .day)
     }
     
@@ -82,8 +78,10 @@ class DetailsViewController: UIViewController, DetailsViewInput {
             $0.height.equalTo(view.snp.height).multipliedBy(0.4)
         }
         
+
+        
         segmentControl.snp.makeConstraints {
-            $0.top.equalTo(chartView.snp.bottom).offset(12)
+            $0.top.equalTo(chartView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(44)
         }
@@ -177,6 +175,7 @@ class DetailsViewController: UIViewController, DetailsViewInput {
     }
     
     func updateChartData(entries: [Charts.ChartDataEntry], chartStep: Int) {
+        
         let dataSet = CandleChartDataSet(entries: entries, label: "Price USD")
         
         dataSet.increasingColor = .systemGreen
@@ -236,23 +235,22 @@ class DetailsViewController: UIViewController, DetailsViewInput {
                 $0.top.equalTo(chartView)
             }
         }
-        
-        let marker = ChartPopupMarker()
+        let marker = ChartMarker()
         marker.chartView = chartView
         chartView.marker = marker
-        
         chartView.animate(xAxisDuration: 1.0, easingOption: .easeInOutQuart)
+        view.layoutSubviews()
     }
 }
 
 extension DetailsViewController: DetailsSegmentControlDelegate {
-    func segmentControlDidTabted(didSelect: DetailsSegmentControl.Section) {
-        segmentControl.didSelect = { [weak self] section in
-            self?.currentSection = section
-            self?.output?.loadChart(for: section)
-        }
-        output?.loadChart(for: didSelect)
+    func segmentControlDidTabted(didSelect section: DetailsSegmentControl.Section) {
+        currentSection = section
+        output?.loadChart(for: section)
+        view.layoutSubviews()
     }
+    //TODO: посмотреть ЖЦ осей и в нужный момент вызывать layout
+    //TODO: сложность O(n)
 }
 
 extension DetailsViewController: AxisValueFormatter {

@@ -5,7 +5,7 @@ import Alamofire
 
 final class NetworkMonitor {
     static let shared = NetworkMonitor()
-    //TODO: не работает в симуляторо но работает на устройстве. протестированно на 11 про v26.1
+    // MARK: it doesn't work in the simulator but it works on the device. tested on 11 pro v26.1
     private var monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitorQueue")
     

@@ -36,19 +36,18 @@ final class ChartDataService: ChartDataServiceProtocol {
     static let hoursURL = Config.ChartAPI.baseURL + Config.ChartAPI.pathHours
     static let daysURL = Config.ChartAPI.baseURL + Config.ChartAPI.pathDays
     static let minutesURL = Config.ChartAPI.baseURL + Config.ChartAPI.pathMinutes
+    let now = Int(Date().timeIntervalSince1970)
     
     private let apiKey = Config.ChartAPI.apiKey
     
     func fetchChartPoints(
-        for range: RangeInterval,
         instrument: String,
         market: String = "kraken",
         aggregate: Int = 1,
         intervalType: IntervalType,
         completionHandler: @escaping ([ChartPoint]?, Error?) -> Void
     ) {
-       
-        
+
         let parameters: Parameters = [
             "market": market,
             "instrument": instrument,
@@ -57,7 +56,7 @@ final class ChartDataService: ChartDataServiceProtocol {
             "fill": true,
             "apply_mapping": true,
             "response_format": "JSON",
-            "to_ts": range.toTS,
+            "to_ts": now,
             "api_key": apiKey
         ]
         

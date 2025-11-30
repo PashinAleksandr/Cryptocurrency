@@ -8,10 +8,9 @@ class FavoritesRouter: FavoritesRouterInput {
     func openCryprocurrenctList() {
         guard let tabBarController = self.transitionHandler?.asViewController?.tabBarController else { return }
         if let navController = tabBarController.viewControllers?.first as? UINavigationController {
-                navController.popToRootViewController(animated: false)
+            navController.popToRootViewController(animated: false)
         }
         tabBarController.selectedIndex = 0
-
     }
 }
 

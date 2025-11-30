@@ -44,7 +44,6 @@ class ServiceAssembly: Assembly {
         container.register(CoinProviderProtocol.self) { _ in
 //TODO: Низкий приоритет дописать isdebag чтоб он еше и перекоючался между колассакми
             CoinProvider()
-           // MockCoinProvider()
         }.inObjectScope(.container)
         
         container.register(FavoritesServiceProtocol.self) { r in

@@ -1,7 +1,6 @@
 import Charts
 import UIKit
-
-class ChartPopupMarker: MarkerView {
+class ChartMarker: MarkerView {
     
     private let dateLabel = UILabel()
     private let priceLabel = UILabel()
@@ -28,8 +27,9 @@ class ChartPopupMarker: MarkerView {
         layer.cornerRadius = 8
         layer.masksToBounds = true
         
-        dateLabel.font = .systemFont(ofSize: 12, weight: .medium)
+        dateLabel.font = .systemFont(ofSize: 20, weight: .medium)
         dateLabel.textColor = .white
+        dateLabel.frame = CGRect(x: 150, y: 150, width: 100, height: 200)
         
         priceLabel.font = .boldSystemFont(ofSize: 14)
         priceLabel.textColor = .systemGreen

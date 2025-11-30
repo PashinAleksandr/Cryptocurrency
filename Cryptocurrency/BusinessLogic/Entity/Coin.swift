@@ -50,16 +50,11 @@ final class Coin: Mappable {
         self.iconURL = iconURL
         self.coinId = coinId
         
-        priceRelay.subscribe { [weak self] sam in
-            self?.oldPrice = sam
+        priceRelay.subscribe { [weak self] value in
+            self?.oldPrice = value
             
         }.disposed(by: dispostBag)
     }
-    
-//    func updatePrice(newPrice: Double) {
-//        oldPrice = priceRelay.value
-//        priceRelay.accept(newPrice)
-//    }
    
     func mapping(map: Map) {
         let stringToInt = TransformOf<Int, Any>(fromJSON: { value in
@@ -77,12 +72,10 @@ final class Coin: Mappable {
         fullCoinName <- map["NAME"]
         
         shortCoinName <- map["SYMBOL"]
-        
+
         price <- (map["PRICE_USD"], stringToDouble)
         priceRelay.accept(price)
-//        updatePrice(newPrice: price)
-       // oldPrice <- (map["PRICE_USD"], stringToDouble)
-        
+
         var cap: Double = 0
         cap <- (map["TOTAL_MKT_CAP_USD"], stringToDouble)
         capitalization = "\(cap)"
@@ -97,12 +90,6 @@ final class Coin: Mappable {
         hasingAlgorithm <- map["ASSET_TYPE"]
         
         iconURL <- (map["LOGO_URL"], URLTransform())
-        
-       
-//        priceRelay.subscribe { [weak self] value in
-//            self?.price = value
-//            self?.oldPrice = value
-//        }.disposed(by: dispostBag)
     }
 }
 

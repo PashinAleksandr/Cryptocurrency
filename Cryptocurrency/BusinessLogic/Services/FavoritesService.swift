@@ -15,7 +15,6 @@ class FavoritesService: FavoritesServiceProtocol {
     init(coinProvider: CoinProviderProtocol) {
         self.coinProvider = coinProvider
         getCoins()
-        
     }
     
     private func getCoins() {
@@ -71,16 +70,8 @@ class FavoritesService: FavoritesServiceProtocol {
     private func loadIds() -> [Int] {
         return UserDefaults.standard.array(forKey: storageKey) as? [Int] ?? []
     }
-    
-    private func loadFromDisk() {
-        let ids = loadIds()
-        guard !ids.isEmpty else { return }
-        
-        coinProvider.fetchCoins(by: ids) { [weak self] coins in
-            self?.favorites.accept(coins)
-        }
-    }
 }
+
 class MockCoinProvider: CoinProviderProtocol {
     func fetchCoins(by ids: [Int], completion: @escaping ([Coin]) -> Void) {
         let mockCoins = [

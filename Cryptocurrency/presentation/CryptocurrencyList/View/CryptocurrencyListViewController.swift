@@ -3,6 +3,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 final class CryptocurrencyListViewController: UIViewController, CryptocurrencyListViewInput {
     
@@ -10,6 +11,7 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
     
     private let tableView = UITableView()
     private var coins: [Coin] = []
+    private var coinsViewModels: [CryptocurrencyTableViewCell.ViewModel] = []
     private let refreshControl = UIRefreshControl()
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let noInternetView = NoInternetView()
@@ -24,17 +26,55 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         setupUI()
         setupRefreshControl()
         setupNetworkMonitor()
-        output.viewIsReady()
         setupActivityIndicator()
+        activityIndicator.startAnimating()
     }
+    
     private func setupActivityIndicator() {
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(activityIndicator)
-        NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-        activityIndicator.startAnimating()
+        activityIndicator.snp.makeConstraints { make in
+            make.centerX.centerY.equalToSuperview()
+        }
+    }
+    
+    func changingCellVIewModel(newCoins: [Coin]) {
+        for newCoin in newCoins {
+            if let index = coins.firstIndex(where: { $0.coinId == newCoin.coinId }) {
+                let oldCoin = coins[index]
+                if oldCoin.priceRelay.value != newCoin.priceRelay.value {
+                    oldCoin.priceRelay.accept(newCoin.priceRelay.value)
+                    oldCoin.changeForDay = newCoin.changeForDay
+                    oldCoin.capitalization = newCoin.capitalization
+                    oldCoin.changePrice = newCoin.changePrice
+                }
+            } else {
+                coins.append(newCoin)
+            }
+        }
+        
+        coins.removeAll { oldCoin in
+            !newCoins.contains(where: { $0.coinId == oldCoin.coinId })
+        }
+        
+        var updatedViewModels: [CryptocurrencyTableViewCell.ViewModel] = []
+        
+        for coin in coins {
+            if let existingVM = coinsViewModels.first(where: { $0.id.value == coin.coinId }) {
+                existingVM.fullName.accept(coin.fullCoinName)
+                existingVM.shortName.accept(coin.shortCoinName)
+                existingVM.price.accept(coin.priceRelay.value.description)
+                existingVM.capitalization.accept(coin.capitalization)
+                existingVM.dailyChange.accept(coin.changeForDay)
+                
+                updatedViewModels.append(existingVM)
+                
+            } else {
+                let newVM = CryptocurrencyTableViewCell.ViewModel(coin: coin)
+                updatedViewModels.append(newVM)
+            }
+        }
+        coinsViewModels = updatedViewModels
     }
     
     func setupInitialState() {
@@ -49,14 +89,11 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
     private var doOnce: Bool = false
     
     func showCoins(_ coins: [Coin]) {
-        //TODO: обновлять массив viewModels перезаполнять.
         self.coins = coins
-        if !doOnce {
-            self.tableView.reloadData()
-            doOnce = true
-        }
+        changingCellVIewModel(newCoins: self.coins)
         refreshControl.endRefreshing()
         stopActivityIndicator()
+        setupInitialState()
     }
     
     private func setupRefreshControl() {
@@ -66,7 +103,7 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
     @objc private func handleRefresh() {
         output.loadCoins()
     }
-
+    
     private func setupNetworkMonitor() {
         NetworkMonitor.shared.isConnectedRelay
             .distinctUntilChanged()
@@ -75,7 +112,6 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
                 guard let self = self else { return }
                 self.noInternetView.isHidden = isConnected
                 if isConnected {
-                    // TODO: ошибка повторно вызываем запрос у ссерверва (первый раз в viewdidload)
                     self.output.loadCoins()
                 }
             })
@@ -97,7 +133,6 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
         }
         tableView.refreshControl = refreshControl
         
-        
         view.addSubview(noInternetView)
         noInternetView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -118,13 +153,13 @@ final class CryptocurrencyListViewController: UIViewController, CryptocurrencyLi
 
 extension CryptocurrencyListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        coins.count
+        coinsViewModels.count
     }
-    //TODO: Заполнять массивом viewModels
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(CryptocurrencyTableViewCell.self, indexPath: indexPath)
-        let coin = coins[indexPath.row]
-        cell.configure(with: coin)
+        let vm = coinsViewModels[indexPath.row]
+        cell.configure(with: vm)
         return cell
     }
     

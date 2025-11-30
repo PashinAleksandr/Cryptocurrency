@@ -5,6 +5,7 @@ import RxSwift
 import RxRelay
 import RxCocoa
 import SnapKit
+import Kingfisher
 
 class FavoritesViewController: UIViewController, FavoritesViewInput, UITableViewDelegate, UITableViewDataSource {
     
@@ -15,6 +16,8 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
     private let refreshControl = UIRefreshControl()
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let noInternetView = NoInternetView()
+    private var coinsViewModels: [CryptocurrencyTableViewCell.ViewModel] = []
+
     
     private lazy var emptyStateView = ActionView(
         viewModel: ActionView.ViewModel(
@@ -92,6 +95,44 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
         }
     }
     
+    func changingCellVIewModel(newCoins: [Coin]) {
+        for newCoin in newCoins {
+            if let index = favorites.firstIndex(where: { $0.coinId == newCoin.coinId }) {
+                let oldCoin = favorites[index]
+                if oldCoin.priceRelay.value != newCoin.priceRelay.value {
+                    oldCoin.priceRelay.accept(newCoin.priceRelay.value)
+                    oldCoin.changeForDay = newCoin.changeForDay
+                    oldCoin.capitalization = newCoin.capitalization
+                    oldCoin.changePrice = newCoin.changePrice
+                }
+            } else {
+                favorites.append(newCoin)
+            }
+        }
+        
+        favorites.removeAll { oldCoin in
+            !newCoins.contains(where: { $0.coinId == oldCoin.coinId })
+        }
+        
+        var updatedViewModels: [CryptocurrencyTableViewCell.ViewModel] = []
+        
+        for favorit in favorites {
+            if let existingVM = coinsViewModels.first(where: { $0.id.value == favorit.coinId }) {
+                existingVM.fullName.accept(favorit.fullCoinName)
+                existingVM.shortName.accept(favorit.shortCoinName)
+                existingVM.price.accept(favorit.priceRelay.value.description)
+                existingVM.capitalization.accept(favorit.capitalization)
+                existingVM.dailyChange.accept(favorit.changeForDay)
+                updatedViewModels.append(existingVM)
+                
+            } else {
+                let newVM = CryptocurrencyTableViewCell.ViewModel(coin: favorit)
+                updatedViewModels.append(newVM)
+            }
+        }
+        coinsViewModels = updatedViewModels
+    }
+    
     private func updateEmptyState() {
         let isEmpty = favorites.isEmpty
         tableView.isHidden = isEmpty
@@ -100,6 +141,7 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
     
     func showFavorites(_ coins: [Coin]) {
         self.favorites = coins
+        changingCellVIewModel(newCoins: self.favorites)
         tableView.reloadData()
         updateEmptyState()
     }
@@ -107,13 +149,13 @@ class FavoritesViewController: UIViewController, FavoritesViewInput, UITableView
     func setupInitialState() {}
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return favorites.count
+        return coinsViewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(CryptocurrencyTableViewCell.self, indexPath: indexPath)
-        let crypto = favorites[indexPath.row]
-        cell.configure(with: crypto)
+        let vm = coinsViewModels[indexPath.row]
+        cell.configure(with: vm)
         return cell
     }
     

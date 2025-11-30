@@ -9,8 +9,7 @@ protocol DetailsInteractorInput: AnyObject {
     func isFavorite(_ coin: Coin) -> Bool
     func observeFavorites() -> Observable<[Coin]>
     
-    func fetchChartPoints(for range: RangeInterval,
-                          instrument: String, section: DetailsSegmentControl.Section,
+    func fetchChartPoints(instrument: String, section: DetailsSegmentControl.Section,
                           completion: @escaping (Result<[ChartPoint], Error>) -> Void)
 }
 

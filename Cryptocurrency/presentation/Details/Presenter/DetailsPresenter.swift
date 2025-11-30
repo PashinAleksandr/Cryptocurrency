@@ -53,18 +53,10 @@ class DetailsPresenter: NSObject, DetailsModuleInput, DetailsViewOutput {
     }
     
     func loadChart(for section: DetailsSegmentControl.Section) {
-        let range: RangeInterval
-        switch section {
-        case .day: range = .day
-        case .week: range = .week
-        case .month: range = .month
-        case .year: range = .year
-        case .all: range = .all
-        }
         
         view.showLoading(true)
         if let coin = coin {
-            interactor.fetchChartPoints(for: range, instrument: (coin.shortCoinName)+"-USD", section: section ) { [weak self] result in
+            interactor.fetchChartPoints(instrument: (coin.shortCoinName)+"-USD", section: section ) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let points):
@@ -79,18 +71,19 @@ class DetailsPresenter: NSObject, DetailsModuleInput, DetailsViewOutput {
                             data: pt.ts as AnyObject
                         )
                     }
+                    view.showLoading(false)
                     self.view.updateChartData(entries: entries, chartStep: 0)
                     
                 case .failure(let error):
                     self.view.show(error)
+                    view.showLoading(false)
                 }
                 
             }
             
         } else {
-            showError(error: "Error" as! Error)
+            showError(error: CoinError.missGrafic)
         }
-        self.view.showLoading(false)
     }
 }
 

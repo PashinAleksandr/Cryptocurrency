@@ -28,7 +28,7 @@ class DetailsInteractor: DetailsInteractorInput {
         return favoritesService.favorites.asObservable()
     }
     
-    func fetchChartPoints(for range: RangeInterval, instrument: String, section: DetailsSegmentControl.Section, completion: @escaping (Result<[ChartPoint], Error>) -> Void) {
+    func fetchChartPoints(instrument: String, section: DetailsSegmentControl.Section, completion: @escaping (Result<[ChartPoint], Error>) -> Void) {
         
         var intervalType: ChartDataService.IntervalType = .all
         switch section {
@@ -39,9 +39,9 @@ class DetailsInteractor: DetailsInteractorInput {
         case .year: intervalType = .year
         }
         
-        chartService.fetchChartPoints(for: range, instrument: instrument, market: "kraken", aggregate: 1, intervalType: intervalType) { points, error in
+        chartService.fetchChartPoints(instrument: instrument, market: "kraken", aggregate: 1, intervalType: intervalType) { points, error in
             if let error = error {
-                self.output.showError(error: error)
+                completion(.failure(error))
             } else if let points = points {
                 completion(.success(points))
             }

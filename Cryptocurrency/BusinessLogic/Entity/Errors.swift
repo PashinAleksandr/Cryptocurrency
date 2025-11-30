@@ -4,11 +4,11 @@ import Foundation
 enum CoinError: LocalizedError {
     case nowData
     case nowInternet
-    case graficError
+    case missGrafic
     
     var errorDescription: String? {
         switch self {
-        case.graficError:
+        case.missGrafic:
             return "Нет данных для построения графика"
         case.nowData:
             return "Не пришли данные с сервера"

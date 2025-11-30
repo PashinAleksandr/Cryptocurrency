@@ -2,9 +2,7 @@ import UIKit
 
 class DetailsSegmentControl: UIStackView {
     
-    weak var delegate: DetailsSegmentControlDelegate?
-    var didSelect: ((Section) -> Void)?
-    
+    weak var delegate: DetailsSegmentControlDelegate?    
     
     private let selectionView = UIView()
     private var selectionLeading: NSLayoutConstraint?
@@ -108,7 +106,6 @@ class DetailsSegmentControl: UIStackView {
         
         if notify, let section = Section(rawValue: button.tag) {
             delegate?.segmentControlDidTabted(didSelect: section)
-            didSelect?(section)
         }
     }
     

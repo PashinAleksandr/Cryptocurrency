@@ -14,34 +14,13 @@ final class CryptocurrencyListInteractor: CryptocurrencyListInteractorInput {
         coinsService.coins
             .asObservable()
             .subscribe(onNext: { [weak self] newCoins in
-//                self?.output?.didUpdateCoins(newCoins)
             })
             .disposed(by: disposeBag)
     }
     
     func loadCoins() {
-        //        coinsService.fetchCoins()
-        //            .subscribe(
-        //                onSuccess: { [weak self] coins in
-        //                    self?.output?.didUpdateCoins(coins)
-        //                },
-        //                onFailure: { error in
-        //                    print("Ошибка загрузки: \(error)")
-        //                }
-        //            )
-        //            .disposed(by: disposeBag)
         
-        
-//        coinsService.fetchCoins2 { coins, error in
-//            if let coins = coins {
-//                self.output.didUpdateCoins(coins)
-//            }
-//            if let error = error {
-//                print(error)
-//            }
-//        }
-        
-        coinsService.fetchCoins2 { [weak self] coins, error in
+        coinsService.fetchCoins { [weak self] coins, error in
             guard let self = self else { return }
             if let coins = coins {
                 self.output.didUpdateCoins(coins)
