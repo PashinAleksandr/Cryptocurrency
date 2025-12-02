@@ -249,8 +249,6 @@ extension DetailsViewController: DetailsSegmentControlDelegate {
         output?.loadChart(for: section)
         view.layoutSubviews()
     }
-    //TODO: посмотреть ЖЦ осей и в нужный момент вызывать layout
-    //TODO: сложность O(n)
 }
 
 extension DetailsViewController: AxisValueFormatter {
