@@ -1,19 +1,8 @@
-//
-//  CryptocurrencyListViewOutput.swift
-//  Cryptocurrency
-//
-//  Created by APashin on 09/09/2025.
-//  Copyright © 2025 bigTopCampany. All rights reserved.
-//
 
 import Foundation
 
-protocol CryptocurrencyListViewOutput {
-
-    /**
-        @author APashin
-        Notify presenter that view is ready
-    */
-
-    func viewIsReady()
+protocol CryptocurrencyListViewOutput: AnyObject {
+    func didSelectCoin(_ coin: Coin)
+    func loadCoins()
 }
+

@@ -1,23 +1,24 @@
-//
-//  CryptocurrencyListPresenter.swift
-//  Cryptocurrency
-//
-//  Created by APashin on 09/09/2025.
-//  Copyright © 2025 bigTopCampany. All rights reserved.
-//
 
 import Foundation
 
-class CryptocurrencyListPresenter: NSObject, CryptocurrencyListModuleInput, CryptocurrencyListViewOutput {
-
+final class CryptocurrencyListPresenter: CryptocurrencyListViewOutput, CryptocurrencyListInteractorOutput {
     weak var view: CryptocurrencyListViewInput!
     var interactor: CryptocurrencyListInteractorInput!
     var router: CryptocurrencyListRouterInput!
-
-    func viewIsReady() {
-        view.setupInitialState()
+    
+    func loadCoins() {
+        interactor.loadCoins()
     }
-}
-
-extension CryptocurrencyListPresenter: CryptocurrencyListInteractorOutput {
+    
+    func didSelectCoin(_ coin: Coin) {
+        router.openDetails(for: coin)
+    }
+    
+    func showError(error: Error) {
+        view.show(error)
+    }
+    
+    func didUpdateCoins(_ coins: [Coin]) {
+        view.showCoins(coins)
+    }
 }

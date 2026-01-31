@@ -1,9 +1,3 @@
-//
-//  TransitionHandler.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 07.09.2025.
-//
 
 import UIKit
 
@@ -18,7 +12,7 @@ protocol TransitionHandlerProtocol: AnyObject {
     
     func closeModule(_ animated: Bool)
     func show(_ module: TransitionHandlerProtocol)
-    func present(_ module: TransitionHandlerProtocol, animated: Bool)
+    func present(module: TransitionHandlerProtocol, animated: Bool)
     func popTo(_ module: TransitionHandlerProtocol, animated: Bool)
     func popTo<T>(_ module: T.Type, animated: Bool)
     func popToRoot(animated: Bool)
@@ -33,7 +27,7 @@ extension TransitionHandlerProtocol {
 extension UIViewController: TransitionHandlerProtocol {
     func presentModule(usingFactory factory: PresentationModuleFactory) {
         let moduleTransitionHandler = factory.instantiateTransitionHandler()
-        present(moduleTransitionHandler, animated: true)
+        present(module: moduleTransitionHandler, animated: true)
     }
     
     func showModule(usingFactory factory: PresentationModuleFactory) {
@@ -48,7 +42,7 @@ extension UIViewController: TransitionHandlerProtocol {
         let count = navigationController?.children.count ?? 0
         
         if hasNavigationStack, count > 1 {
-            navigationController?.popViewController(animated: animated)
+            navController?.popViewController(animated: animated)
         } else if let vc = self.presentingViewController {
             vc.dismiss(animated: animated)
         }
@@ -59,7 +53,7 @@ extension UIViewController: TransitionHandlerProtocol {
         self.show(vc, sender: nil)
     }
     
-    func present(_ module: TransitionHandlerProtocol, animated: Bool) {
+    func present(module: TransitionHandlerProtocol, animated: Bool) {
         guard let vc = module.asViewController else { return }
         self.present(vc, animated: animated)
     }
@@ -80,3 +74,4 @@ extension UIViewController: TransitionHandlerProtocol {
     }
     
 }
+

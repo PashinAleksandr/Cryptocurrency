@@ -1,19 +1,11 @@
-//
-//  CryptocurrencyListFactory.swift
-//  Cryptocurrency
-//
-//  Created by APashin on 09/09/2025.
-//  Copyright © 2025 bigTopCampany. All rights reserved.
-//
 
 import Foundation
 import Swinject
 
 class CryptocurrencyListFactory: PresentationModuleFactory {
-
+    
     func instantiateViewController() -> CryptocurrencyListViewController {
-        let viewController = MainModuleAssembler.resolver.resolve(CryptocurrencyListViewController.self)!
-        return viewController
+        return MainModuleAssembler.resolver.resolve(CryptocurrencyListViewController.self)!
     }
     
     func instantiateTransitionHandler() -> TransitionHandlerProtocol {
@@ -23,23 +15,28 @@ class CryptocurrencyListFactory: PresentationModuleFactory {
 
 class CryptocurrencyListModuleAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(CryptocurrencyListViewController.self) { (resolver: Resolver) in
-            let viewController = CryptocurrencyListViewController()
+        container.register(CryptocurrencyListViewController.self) { resolver in
+            let vc = CryptocurrencyListViewController()
+            
             let router = CryptocurrencyListRouter()
-            router.transitionHandler = viewController
-
+            router.transitionHandler = vc
+            
             let presenter = CryptocurrencyListPresenter()
-            presenter.view = viewController
+            presenter.view = vc
             presenter.router = router
-
-            viewController.output = presenter
-            viewController.moduleInput = presenter
-
+            
             let interactor = CryptocurrencyListInteractor()
-            presenter.interactor = interactor
             interactor.output = presenter
-
-            return viewController
+            interactor.coinsService = resolver.resolve(CoinsServiceProtocol.self)
+            
+            presenter.interactor = interactor
+            vc.output = presenter
+            
+            return vc
         }.inObjectScope(.transient)
+        
+        container.register(CoinsServiceProtocol.self) { _ in
+            CoinsService()
+        }.inObjectScope(.container)
     }
 }

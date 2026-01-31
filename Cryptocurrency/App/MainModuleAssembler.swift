@@ -1,14 +1,8 @@
-//
-//  MainModuleAssembler.swift
-//  Cryptocurrency
-//
-//  Created by Aleksandr Pashin on 07.09.2025.
-//
 
 import Swinject
 
 final class MainModuleAssembler {
-
+    
     private static var assembler: Assembler!
     
     public static var resolver: Resolver {
@@ -32,15 +26,29 @@ extension MainModuleAssembler {
     
     private static func initPresentationModules() -> [Assembly] {
         return [
-            CryptocurrencyListModuleAssembly()
+            CryptocurrencyListModuleAssembly(), FavoritesModuleAssembly(), DetailsModuleAssembly()
         ]
     }
     
     private static func initServiceModules() -> [Assembly] {
         return [
-        
+            ServiceAssembly()
         ]
     }
     
 }
 
+
+class ServiceAssembly: Assembly {
+    func assemble(container: Container) {
+        container.register(CoinProviderProtocol.self) { _ in
+//TODO: Низкий приоритет дописать isdebag чтоб он еше и перекоючался между колассакми
+            CoinProvider()
+        }.inObjectScope(.container)
+        
+        container.register(FavoritesServiceProtocol.self) { r in
+            let provider = r.resolve(CoinProviderProtocol.self)!
+            return FavoritesService(coinProvider: provider)
+        }.inObjectScope(.container)
+    }
+}

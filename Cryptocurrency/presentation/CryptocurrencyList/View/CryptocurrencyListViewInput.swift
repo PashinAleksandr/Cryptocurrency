@@ -1,19 +1,8 @@
-//
-//  CryptocurrencyListViewInput.swift
-//  Cryptocurrency
-//
-//  Created by APashin on 09/09/2025.
-//  Copyright © 2025 bigTopCampany. All rights reserved.
-//
 
 import Foundation
 
 protocol CryptocurrencyListViewInput: UIViewInput {
-
-    /**
-        @author APashin
-        Setup initial state of the view
-    */
-
     func setupInitialState()
+    func showCoins(_ coins: [Coin])
+    func stopActivityIndicator()
 }
