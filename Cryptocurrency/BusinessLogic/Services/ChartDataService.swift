@@ -36,7 +36,9 @@ final class ChartDataService: ChartDataServiceProtocol {
     static let hoursURL = Config.ChartAPI.baseURL + Config.ChartAPI.pathHours
     static let daysURL = Config.ChartAPI.baseURL + Config.ChartAPI.pathDays
     static let minutesURL = Config.ChartAPI.baseURL + Config.ChartAPI.pathMinutes
-    let now = Int(Date().timeIntervalSince1970)
+    var now: Int {
+        Int(Date().timeIntervalSince1970)
+    }
     
     private let apiKey = Config.ChartAPI.apiKey
     
